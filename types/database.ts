@@ -1226,7 +1226,7 @@ export type Database = {
           id?: string
           notes?: string | null
           order_id: string
-          quote_number: string
+          quote_number?: string
           sent_at?: string | null
           status?: Database["public"]["Enums"]["quote_status"]
           subtotal?: number
@@ -1445,6 +1445,7 @@ export type Database = {
         Returns: Database["public"]["Enums"]["staff_role"]
       }
       generate_order_number: { Args: never; Returns: string }
+      generate_quote_number: { Args: never; Returns: string }
       is_admin: { Args: never; Returns: boolean }
       is_staff: { Args: never; Returns: boolean }
       submit_contact_request: {
