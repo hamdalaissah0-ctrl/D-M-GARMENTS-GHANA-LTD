@@ -4,6 +4,7 @@ import { Card, CardContent } from "@/components/ui/card"
 import { SiteHeader } from "@/components/layout/site-header"
 import { SiteFooter } from "@/components/layout/site-footer"
 import { ContentRequired } from "@/components/marketing/content-required"
+import { MissionVisionBanners } from "@/components/marketing/mission-vision-banners"
 import {
   getCompanyProfile,
   getFeaturedProducts,
@@ -25,12 +26,39 @@ import {
   Phone,
 } from "lucide-react"
 
+const MEDIA_BASE = "https://otscslkmvhunzlxfrqse.supabase.co/storage/v1/object/public/media"
+
 const CAPABILITIES = [
-  { label: "Uniform Manufacturing", icon: Shirt },
-  { label: "PPE", icon: ShieldCheck },
-  { label: "Embroidery", icon: Sparkles },
-  { label: "DTF Printing", icon: Printer },
-  { label: "Branding", icon: Ruler },
+  {
+    label: "School Uniforms",
+    icon: Shirt,
+    image: `${MEDIA_BASE}/categories/school-uniforms.png`,
+    href: "/order",
+  },
+  {
+    label: "Reflective / PPE",
+    icon: ShieldCheck,
+    image: `${MEDIA_BASE}/categories/reflective-uniforms.png`,
+    href: "/order",
+  },
+  {
+    label: "T-Shirt Printing",
+    icon: Sparkles,
+    image: `${MEDIA_BASE}/categories/tshirt-printing.png`,
+    href: "/order",
+  },
+  {
+    label: "Customized Caps",
+    icon: Printer,
+    image: `${MEDIA_BASE}/categories/customized-caps.png`,
+    href: "/order",
+  },
+  {
+    label: "Exercise Books",
+    icon: Ruler,
+    image: `${MEDIA_BASE}/categories/exercise-books.png`,
+    href: "/order",
+  },
 ]
 
 const WHY_CHOOSE_US = [
@@ -83,14 +111,13 @@ export default async function HomePage() {
       <main className="flex-1">
         {/* Hero */}
         <section className="relative overflow-hidden bg-brand-hero text-white">
-          <div
-            className="pointer-events-none absolute inset-0 opacity-[0.07]"
-            style={{
-              backgroundImage:
-                "linear-gradient(to right, white 1px, transparent 1px), linear-gradient(to bottom, white 1px, transparent 1px)",
-              backgroundSize: "48px 48px",
-            }}
+          {/* eslint-disable-next-line @next/next/no-img-element */}
+          <img
+            src={`${MEDIA_BASE}/branding/hero-banner.png`}
+            alt="D&M Garments — school uniforms, fabric printing and embroidery"
+            className="absolute inset-0 size-full object-cover opacity-25"
           />
+          <div className="absolute inset-0 bg-gradient-to-r from-black/70 via-black/50 to-transparent" />
           <div className="relative mx-auto max-w-7xl px-4 py-24 sm:px-6 sm:py-32 lg:px-8">
             <div className="max-w-2xl">
               <span className="inline-flex items-center gap-2 rounded-full border border-white/15 bg-white/5 px-3 py-1 text-xs font-medium tracking-wide text-white/80 uppercase">
@@ -176,13 +203,17 @@ export default async function HomePage() {
               />
             </div>
             <div className="order-1 lg:order-2">
-              <ContentRequired
-                title="Production photography required"
-                description="Workshop and production photos will appear here once D&M supplies approved images."
+              {/* eslint-disable-next-line @next/next/no-img-element */}
+              <img
+                src={`${MEDIA_BASE}/branding/production-equipment.png`}
+                alt="D&M Garments production equipment — DTF and UV printing"
+                className="w-full rounded-2xl border border-white/10 object-cover"
               />
             </div>
           </div>
         </section>
+
+        <MissionVisionBanners />
 
         {/* Why choose us */}
         <section className="mx-auto max-w-7xl px-4 py-20 sm:px-6 lg:px-8">
@@ -215,23 +246,33 @@ export default async function HomePage() {
           </div>
         </section>
 
-        {/* Manufacturing capabilities */}
+        {/* Manufacturing capabilities — select a category to start an order */}
         <section className="border-y border-border bg-secondary/40">
           <div className="mx-auto max-w-7xl px-4 py-16 sm:px-6 lg:px-8">
-            <h2 className="text-2xl font-bold tracking-tight text-foreground">
-              What We Manufacture
-            </h2>
-            <div className="mt-8 grid grid-cols-2 gap-4 sm:grid-cols-5">
-              {CAPABILITIES.map(({ label, icon: Icon }) => (
-                <div
+            <div className="flex items-end justify-between">
+              <h2 className="text-2xl font-bold tracking-tight text-foreground">
+                What We Manufacture
+              </h2>
+              <p className="hidden text-sm text-muted-foreground sm:block">
+                Tap a category to start your request
+              </p>
+            </div>
+            <div className="mt-8 grid grid-cols-2 gap-4 sm:grid-cols-3 lg:grid-cols-5">
+              {CAPABILITIES.map(({ label, image, href }) => (
+                <Link
                   key={label}
-                  className="flex flex-col items-center gap-3 rounded-xl border border-border bg-card py-7 text-center shadow-sm"
+                  href={href}
+                  className="group relative flex aspect-[4/5] flex-col justify-end overflow-hidden rounded-2xl border border-border bg-card shadow-sm transition-shadow hover:shadow-lg"
                 >
-                  <span className="flex size-11 items-center justify-center rounded-xl bg-brand-cta text-white">
-                    <Icon className="size-5" />
-                  </span>
-                  <span className="text-sm font-medium text-foreground">{label}</span>
-                </div>
+                  {/* eslint-disable-next-line @next/next/no-img-element */}
+                  <img
+                    src={image}
+                    alt={label}
+                    className="absolute inset-0 size-full object-cover transition-transform duration-300 group-hover:scale-105"
+                  />
+                  <div className="absolute inset-0 bg-gradient-to-t from-black/75 via-black/10 to-transparent" />
+                  <span className="relative p-3 text-sm font-semibold text-white">{label}</span>
+                </Link>
               ))}
             </div>
           </div>

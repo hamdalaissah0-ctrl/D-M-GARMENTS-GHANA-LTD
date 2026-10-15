@@ -1,9 +1,13 @@
+const LOGO_URL =
+  "https://otscslkmvhunzlxfrqse.supabase.co/storage/v1/object/public/media/branding/dm-logo.png"
+
 export function LogoMark({ className }: { className?: string }) {
   return (
-    <span
-      className={`inline-flex size-9 shrink-0 items-center justify-center rounded-xl bg-brand-cta text-[11px] font-extrabold tracking-tight text-white shadow-sm ${className ?? ""}`}
-    >
-      D&amp;M
-    </span>
+    // eslint-disable-next-line @next/next/no-img-element
+    <img
+      src={LOGO_URL}
+      alt="D&M Garments Ghana Limited"
+      className={`size-9 shrink-0 rounded-lg object-contain ${className ?? ""}`}
+    />
   )
 }
