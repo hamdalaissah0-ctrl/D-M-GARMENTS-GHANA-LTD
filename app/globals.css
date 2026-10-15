@@ -129,6 +129,35 @@
   }
 }
 
+/* Tokens from the ported startup-nextjs (NextJSTemplates, MIT) component set.
+   --color-primary already resolves to our brand green via --primary above. */
+@theme {
+  --color-black: oklch(0.2 0.02 150);
+  --color-dark: oklch(0.17 0.015 155);
+  --color-body-color: oklch(0.5 0.02 150);
+  --color-body-color-dark: oklch(0.7 0.01 150);
+  --color-stroke-stroke: oklch(0.91 0.01 150);
+  --color-stroke-dark: oklch(0.3 0.02 155);
+  --color-gray-light: oklch(0.97 0.005 150);
+  --color-gray-dark: oklch(0.21 0.02 155);
+  --color-bg-color-dark: oklch(0.17 0.015 155);
+
+  --shadow-one: 0px 2px 3px rgba(7, 7, 77, 0.05);
+  --shadow-two: 0px 5px 10px rgba(6, 8, 15, 0.1);
+  --shadow-three: 0px 5px 15px rgba(6, 8, 15, 0.05);
+  --shadow-sticky: inset 0 -1px 0 0 rgba(0, 0, 0, 0.1);
+  --shadow-sticky-dark: inset 0 -1px 0 0 rgba(255, 255, 255, 0.1);
+  --shadow-btn: 0px 1px 2px rgba(4, 10, 34, 0.15);
+  --shadow-btn-hover: 0px 1px 2px rgba(0, 0, 0, 0.15);
+  --drop-shadow-three: 0px 5px 15px rgba(6, 8, 15, 0.05);
+}
+
+@utility container {
+  margin-inline: auto;
+  padding-inline: 1rem;
+  max-width: 1200px;
+}
+
 @layer utilities {
   /* Brand gradients — green-led, matches the approved reference direction */
   .bg-brand-hero {
