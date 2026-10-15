@@ -144,6 +144,7 @@ export type Database = {
       }
       categories: {
         Row: {
+          available_sizes: string[]
           created_at: string
           description: string | null
           id: string
@@ -157,6 +158,7 @@ export type Database = {
           updated_at: string
         }
         Insert: {
+          available_sizes?: string[]
           created_at?: string
           description?: string | null
           id?: string
@@ -170,6 +172,7 @@ export type Database = {
           updated_at?: string
         }
         Update: {
+          available_sizes?: string[]
           created_at?: string
           description?: string | null
           id?: string
@@ -183,6 +186,41 @@ export type Database = {
           updated_at?: string
         }
         Relationships: []
+      }
+      category_images: {
+        Row: {
+          alt_text: string | null
+          category_id: string
+          created_at: string
+          id: string
+          sort_order: number
+          storage_path: string
+        }
+        Insert: {
+          alt_text?: string | null
+          category_id: string
+          created_at?: string
+          id?: string
+          sort_order?: number
+          storage_path: string
+        }
+        Update: {
+          alt_text?: string | null
+          category_id?: string
+          created_at?: string
+          id?: string
+          sort_order?: number
+          storage_path?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "category_images_category_id_fkey"
+            columns: ["category_id"]
+            isOneToOne: false
+            referencedRelation: "categories"
+            referencedColumns: ["id"]
+          },
+        ]
       }
       communications: {
         Row: {

@@ -7,9 +7,7 @@ import { Button } from "@/components/ui/button"
 import { LogoMark } from "@/components/layout/logo-mark"
 
 const NAV_LINKS = [
-  { href: "/products", label: "Products" },
-  { href: "/services", label: "Services" },
-  { href: "/industries", label: "Industries" },
+  { href: "/products", label: "Services" },
   { href: "/portfolio", label: "Portfolio" },
   { href: "/about", label: "About" },
   { href: "/contact", label: "Contact" },

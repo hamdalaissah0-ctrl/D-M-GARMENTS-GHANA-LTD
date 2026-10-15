@@ -5,104 +5,61 @@ import { SiteHeader } from "@/components/layout/site-header"
 import { SiteFooter } from "@/components/layout/site-footer"
 import { ContentRequired } from "@/components/marketing/content-required"
 import { MissionVisionBanners } from "@/components/marketing/mission-vision-banners"
+import { ScrollReveal } from "@/components/marketing/scroll-reveal"
 import {
   getCompanyProfile,
-  getFeaturedProducts,
   getPublishedTestimonials,
-  getFeaturedPortfolio,
+  getPublishedCategories,
 } from "@/lib/supabase/queries"
 import {
   ArrowRight,
   ArrowUpRight,
-  ShieldCheck,
-  Ruler,
-  Sparkles,
-  Printer,
-  Shirt,
-  Users,
+  Phone,
   Wallet,
   BadgeCheck,
   HeartHandshake,
-  Phone,
+  ShieldCheck,
+  Upload,
+  ClipboardList,
+  Send,
+  PhoneCall,
 } from "lucide-react"
 
 const MEDIA_BASE = "https://otscslkmvhunzlxfrqse.supabase.co/storage/v1/object/public/media"
 
-const CAPABILITIES = [
-  {
-    label: "School Uniforms",
-    icon: Shirt,
-    image: `${MEDIA_BASE}/categories/school-uniforms.png`,
-    href: "/order",
-  },
-  {
-    label: "Reflective / PPE",
-    icon: ShieldCheck,
-    image: `${MEDIA_BASE}/categories/reflective-uniforms.png`,
-    href: "/order",
-  },
-  {
-    label: "T-Shirt Printing",
-    icon: Sparkles,
-    image: `${MEDIA_BASE}/categories/tshirt-printing.png`,
-    href: "/order",
-  },
-  {
-    label: "Customized Caps",
-    icon: Printer,
-    image: `${MEDIA_BASE}/categories/customized-caps.png`,
-    href: "/order",
-  },
-  {
-    label: "Exercise Books",
-    icon: Ruler,
-    image: `${MEDIA_BASE}/categories/exercise-books.png`,
-    href: "/order",
-  },
-]
-
-const WHY_CHOOSE_US = [
-  {
-    icon: Users,
-    title: "Manufacturing-Focused",
-    description:
-      "We're a production business first — built to manufacture uniforms at scale, not a reseller.",
-    href: "/about",
-  },
+const BENTO_FEATURES = [
   {
     icon: Wallet,
     title: "No Minimum Order",
-    description: "No minimum order quantity — we take on requests of any size.",
-    href: "/order",
+    description: "We take on requests of any size — no minimum order quantity, ever.",
+    dark: false,
   },
   {
     icon: BadgeCheck,
-    title: "Full Customisation",
-    description: "Embroidery, DTF printing and branding built into every order.",
-    href: "/services",
+    title: "Full Customisation In-House",
+    description: "Embroidery, DTF printing and branding handled under one roof.",
+    dark: true,
   },
   {
     icon: HeartHandshake,
     title: "Direct Communication",
     description: "Talk directly with our team by phone or WhatsApp throughout your order.",
-    href: "/contact",
+    dark: false,
   },
 ]
 
 const HOW_IT_WORKS = [
-  { step: "01", label: "Choose", description: "Browse our catalogue or describe something custom." },
-  { step: "02", label: "Specify", description: "Tell us quantity, colours, branding and sizing." },
-  { step: "03", label: "Upload", description: "Attach reference designs or logos." },
-  { step: "04", label: "Submit", description: "Send your request — no payment required yet." },
-  { step: "05", label: "We Contact You", description: "Our team reviews and reaches out with a quote." },
+  { icon: ClipboardList, label: "Choose a Service", description: "Browse our categories and pick what you need." },
+  { icon: Upload, label: "Add Your Details", description: "Select size, quantity, colours and branding." },
+  { icon: Send, label: "Submit Your Order", description: "No payment required — just tell us what you need." },
+  { icon: PhoneCall, label: "We Contact You", description: "Our team reviews and follows up with a quote." },
 ]
 
 export default async function HomePage() {
-  const [company, featuredProducts, testimonials, portfolio] = await Promise.all([
+  const [company, testimonials, categories] = await Promise.all([
     getCompanyProfile(),
-    getFeaturedProducts(),
     getPublishedTestimonials(),
-    getFeaturedPortfolio(),
+    getPublishedCategories(),
   ])
 
   return (
@@ -117,7 +74,7 @@ export default async function HomePage() {
             alt="D&M Garments — school uniforms, fabric printing and embroidery"
             className="absolute inset-0 size-full object-cover opacity-25"
           />
-          <div className="absolute inset-0 bg-gradient-to-r from-black/70 via-black/50 to-transparent" />
+          <div className="absolute inset-0 bg-gradient-to-r from-black/75 via-black/55 to-black/20" />
           <div className="relative mx-auto max-w-7xl px-4 py-24 sm:px-6 sm:py-32 lg:px-8">
             <div className="max-w-2xl">
               <span className="inline-flex items-center gap-2 rounded-full border border-white/15 bg-white/5 px-3 py-1 text-xs font-medium tracking-wide text-white/80 uppercase">
@@ -133,243 +90,255 @@ export default async function HomePage() {
                 printing and branding built in.
                 {company?.no_moq ? " No minimum order quantity." : ""}
               </p>
-              <div className="mt-10 flex flex-wrap gap-4">
+              <div className="mt-10 flex flex-wrap items-center gap-4">
                 <Button
                   size="lg"
                   nativeButton={false}
-                  className="bg-brand-cta text-white shadow-lg shadow-black/20 hover:opacity-90"
+                  className="gap-3 rounded-full bg-brand-cta pr-2 text-white shadow-lg shadow-black/20 hover:opacity-90"
                   render={
-                    <Link href="/order">
-                      Request a Quote <ArrowRight className="ms-1 size-4" />
+                    <Link href="/products">
+                      Request a Quote
+                      <span className="flex size-7 items-center justify-center rounded-full bg-white/20">
+                        <ArrowRight className="size-4" />
+                      </span>
                     </Link>
                   }
                 />
-                <Button
-                  size="lg"
-                  variant="outline"
-                  nativeButton={false}
-                  className="border-white/25 bg-white/5 text-white hover:bg-white/10"
-                  render={<Link href="/products">Explore Our Products</Link>}
-                />
+                {company?.phone_primary && (
+                  <a
+                    href={`tel:${company.phone_primary}`}
+                    className="flex items-center gap-3 text-sm text-white/80 hover:text-white"
+                  >
+                    <span className="flex size-10 items-center justify-center rounded-full bg-white/10">
+                      <Phone className="size-4" />
+                    </span>
+                    <span>
+                      Call Us
+                      <br />
+                      <span className="font-semibold text-white">{company.phone_primary}</span>
+                    </span>
+                  </a>
+                )}
               </div>
             </div>
           </div>
 
-          {/* Floating info card, echoes the reference layout's top-right note */}
+          {/* Floating fact card */}
           <div className="relative mx-auto hidden max-w-7xl px-4 pb-16 sm:px-6 lg:block lg:px-8">
-            <div className="absolute top-[-9.5rem] right-8 w-64 rounded-2xl border border-white/10 bg-white/5 p-5 backdrop-blur-sm">
-              <p className="text-sm text-white/70">
-                A Ghanaian garment manufacturer built for custom production.
-              </p>
-              <Button
-                size="sm"
-                variant="outline"
-                nativeButton={false}
-                className="mt-4 w-full border-white/25 bg-transparent text-white hover:bg-white/10"
-                render={<Link href="/contact">Contact Us</Link>}
-              />
+            <div className="absolute top-[-7rem] right-8 flex items-center gap-3 rounded-2xl border border-white/10 bg-white/5 px-5 py-4 backdrop-blur-sm">
+              <span className="flex size-10 shrink-0 items-center justify-center rounded-full bg-primary">
+                <ShieldCheck className="size-5 text-primary-foreground" />
+              </span>
+              <div>
+                <p className="text-sm font-semibold text-white">No Minimum Order</p>
+                <p className="text-xs text-white/60">Any quantity, always welcome</p>
+              </div>
             </div>
           </div>
         </section>
 
-        {/* About Us */}
-        <section className="bg-brand-panel text-white">
-          <div className="mx-auto grid max-w-7xl gap-12 px-4 py-20 sm:px-6 lg:grid-cols-2 lg:items-center lg:px-8">
-            <div className="order-2 lg:order-1">
-              <div className="flex items-center gap-2 text-primary">
-                <span className="size-2 rounded-full bg-primary" />
-                <span className="text-sm font-semibold tracking-wide uppercase">About Us</span>
+        {/* Bento features */}
+        <section className="mx-auto max-w-7xl px-4 py-20 sm:px-6 lg:px-8">
+          <ScrollReveal className="max-w-2xl">
+            <span className="text-sm font-semibold tracking-wide text-primary uppercase">
+              Our Approach
+            </span>
+            <h2 className="mt-3 text-3xl font-bold tracking-tight text-foreground sm:text-4xl">
+              Essential features for manufacturing success
+            </h2>
+          </ScrollReveal>
+          <div className="mt-12 grid gap-5 lg:grid-cols-3">
+            {BENTO_FEATURES.map(({ icon: Icon, title, description, dark }, i) => (
+              <ScrollReveal key={title} direction="up" className={i === 1 ? "lg:translate-y-6" : ""}>
+                <Card
+                  className={
+                    dark
+                      ? "h-full border-transparent bg-brand-panel text-white"
+                      : "h-full border-border/70"
+                  }
+                >
+                  <CardContent className="flex h-full flex-col p-7">
+                    <span
+                      className={`flex size-12 items-center justify-center rounded-xl ${
+                        dark ? "bg-white/15" : "bg-brand-cta text-white"
+                      }`}
+                    >
+                      <Icon className="size-6" />
+                    </span>
+                    <h3 className="mt-6 text-lg font-semibold">{title}</h3>
+                    <p className={`mt-2 text-sm ${dark ? "text-white/70" : "text-muted-foreground"}`}>
+                      {description}
+                    </p>
+                    <Link
+                      href="/products"
+                      className={`mt-6 inline-flex items-center gap-1.5 text-sm font-medium ${
+                        dark ? "text-white" : "text-primary"
+                      } hover:underline`}
+                    >
+                      Explore More <ArrowUpRight className="size-3.5" />
+                    </Link>
+                  </CardContent>
+                </Card>
+              </ScrollReveal>
+            ))}
+          </div>
+        </section>
+
+        {/* About / Who we are */}
+        <section className="bg-secondary/30 py-20">
+          <div className="mx-auto grid max-w-7xl gap-12 px-4 sm:px-6 lg:grid-cols-2 lg:items-center lg:px-8">
+            <ScrollReveal direction="left" className="relative">
+              {/* eslint-disable-next-line @next/next/no-img-element */}
+              <img
+                src={`${MEDIA_BASE}/branding/production-equipment.png`}
+                alt="D&M Garments production equipment — DTF and UV printing"
+                className="w-full rounded-2xl border border-border object-cover shadow-sm"
+              />
+              <div className="absolute -bottom-6 -left-4 flex items-center gap-3 rounded-2xl border border-border bg-card px-5 py-4 shadow-md sm:-left-6">
+                <span className="flex size-10 shrink-0 items-center justify-center rounded-full bg-primary">
+                  <BadgeCheck className="size-5 text-primary-foreground" />
+                </span>
+                <div>
+                  <p className="text-sm font-semibold text-foreground">In-House Production</p>
+                  <p className="text-xs text-muted-foreground">DTF · UV · Embroidery</p>
+                </div>
               </div>
-              <h2 className="mt-4 text-3xl font-bold tracking-tight sm:text-4xl">
-                D&amp;M Garments:
-                <br />A Manufacturing Business, Not a Storefront
+            </ScrollReveal>
+
+            <ScrollReveal direction="right">
+              <span className="text-sm font-semibold tracking-wide text-primary uppercase">
+                Who We Are
+              </span>
+              <h2 className="mt-3 text-3xl font-bold tracking-tight text-foreground sm:text-4xl">
+                A manufacturing business, not a storefront
               </h2>
-              <p className="mt-5 max-w-lg text-white/65">
+              <p className="mt-5 text-muted-foreground">
                 {company?.company_name ?? "D&M Garments Ghana Limited"} is a garment
                 manufacturing and branding business based at{" "}
                 {company?.address ?? "Content required"}. We manufacture hospitality,
                 corporate, workwear, PPE and branded clothing — with embroidery, DTF printing
                 and branding handled in-house.
               </p>
+              <div className="mt-6 flex flex-wrap gap-2">
+                {["Embroidery", "DTF Printing", "UV Printing", "School Uniforms", "Branding"].map((tag) => (
+                  <span
+                    key={tag}
+                    className="rounded-full border border-border bg-card px-3.5 py-1.5 text-xs font-medium text-foreground"
+                  >
+                    {tag}
+                  </span>
+                ))}
+              </div>
               <Button
-                variant="outline"
+                className="mt-8 rounded-full bg-brand-cta text-white"
                 nativeButton={false}
-                className="mt-7 border-white/25 bg-transparent text-white hover:bg-white/10"
                 render={
                   <Link href="/about">
-                    Read More <ArrowUpRight className="ms-1 size-4" />
+                    More About Us <ArrowUpRight className="ms-1 size-4" />
                   </Link>
                 }
               />
-            </div>
-            <div className="order-1 lg:order-2">
-              {/* eslint-disable-next-line @next/next/no-img-element */}
-              <img
-                src={`${MEDIA_BASE}/branding/production-equipment.png`}
-                alt="D&M Garments production equipment — DTF and UV printing"
-                className="w-full rounded-2xl border border-white/10 object-cover"
-              />
-            </div>
+            </ScrollReveal>
           </div>
         </section>
 
         <MissionVisionBanners />
 
-        {/* Why choose us */}
-        <section className="mx-auto max-w-7xl px-4 py-20 sm:px-6 lg:px-8">
-          <div className="mx-auto max-w-2xl text-center">
-            <span className="text-sm font-semibold tracking-wide text-primary uppercase">
-              Best Manufacturing Partner In Ghana
-            </span>
-            <h2 className="mt-3 text-3xl font-bold tracking-tight text-foreground sm:text-4xl">
-              Why You Should Choose Our Services?
-            </h2>
-          </div>
-          <div className="mt-14 grid gap-6 sm:grid-cols-2 lg:grid-cols-4">
-            {WHY_CHOOSE_US.map(({ icon: Icon, title, description, href }) => (
-              <Card key={title} className="border-border/70">
-                <CardContent className="flex flex-col items-center gap-3 p-6 text-center">
-                  <span className="flex size-14 items-center justify-center rounded-2xl bg-brand-cta text-white shadow-sm">
-                    <Icon className="size-6" />
-                  </span>
-                  <p className="font-semibold text-foreground">{title}</p>
-                  <p className="text-sm text-muted-foreground">{description}</p>
-                  <Link
-                    href={href}
-                    className="mt-1 inline-flex items-center gap-1 text-sm font-medium text-primary hover:underline"
-                  >
-                    Learn more <ArrowUpRight className="size-3.5" />
-                  </Link>
-                </CardContent>
-              </Card>
-            ))}
-          </div>
-        </section>
-
-        {/* Manufacturing capabilities — select a category to start an order */}
-        <section className="border-y border-border bg-secondary/40">
-          <div className="mx-auto max-w-7xl px-4 py-16 sm:px-6 lg:px-8">
-            <div className="flex items-end justify-between">
-              <h2 className="text-2xl font-bold tracking-tight text-foreground">
-                What We Manufacture
-              </h2>
+        {/* Services — horizontal scroll, square covers, Jiji-style entry points */}
+        <section className="py-20">
+          <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
+            <ScrollReveal className="flex items-end justify-between">
+              <div>
+                <span className="text-sm font-semibold tracking-wide text-primary uppercase">
+                  What We Manufacture
+                </span>
+                <h2 className="mt-3 text-3xl font-bold tracking-tight text-foreground sm:text-4xl">
+                  Browse Our Services
+                </h2>
+              </div>
               <p className="hidden text-sm text-muted-foreground sm:block">
-                Tap a category to start your request
+                Tap a service to view samples &amp; order
               </p>
+            </ScrollReveal>
+          </div>
+
+          {categories.length === 0 ? (
+            <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
+              <div className="mt-8">
+                <ContentRequired
+                  title="No services published yet"
+                  description="Services will appear here once added in the admin CMS."
+                />
+              </div>
             </div>
-            <div className="mt-8 grid grid-cols-2 gap-4 sm:grid-cols-3 lg:grid-cols-5">
-              {CAPABILITIES.map(({ label, image, href }) => (
+          ) : (
+            <div className="mt-10 flex gap-5 overflow-x-auto px-4 pb-4 sm:px-6 lg:px-8">
+              {categories.map((category) => (
                 <Link
-                  key={label}
-                  href={href}
-                  className="group relative flex aspect-[4/5] flex-col justify-end overflow-hidden rounded-2xl border border-border bg-card shadow-sm transition-shadow hover:shadow-lg"
+                  key={category.id}
+                  href={`/products/${category.slug}`}
+                  className="group relative aspect-square w-64 shrink-0 overflow-hidden rounded-2xl border border-border shadow-sm transition-shadow hover:shadow-lg"
                 >
-                  {/* eslint-disable-next-line @next/next/no-img-element */}
-                  <img
-                    src={image}
-                    alt={label}
-                    className="absolute inset-0 size-full object-cover transition-transform duration-300 group-hover:scale-105"
-                  />
-                  <div className="absolute inset-0 bg-gradient-to-t from-black/75 via-black/10 to-transparent" />
-                  <span className="relative p-3 text-sm font-semibold text-white">{label}</span>
+                  {category.image_url ? (
+                    // eslint-disable-next-line @next/next/no-img-element
+                    <img
+                      src={category.image_url}
+                      alt={category.name}
+                      className="absolute inset-0 size-full object-cover transition-transform duration-300 group-hover:scale-105"
+                    />
+                  ) : (
+                    <div className="absolute inset-0 bg-secondary" />
+                  )}
+                  <div className="absolute inset-0 bg-gradient-to-t from-black/80 via-black/10 to-transparent" />
+                  <div className="absolute inset-x-0 bottom-0 p-4">
+                    <p className="text-base font-semibold text-white">{category.name}</p>
+                    <span className="mt-1 inline-flex items-center gap-1 text-xs text-white/75">
+                      View Samples <ArrowUpRight className="size-3" />
+                    </span>
+                  </div>
                 </Link>
               ))}
             </div>
-          </div>
-        </section>
-
-        {/* Featured products */}
-        <section className="mx-auto max-w-7xl px-4 py-20 sm:px-6 lg:px-8">
-          <div className="flex items-end justify-between">
-            <h2 className="text-2xl font-bold tracking-tight text-foreground">
-              Featured Manufacturing Work
-            </h2>
-            <Link
-              href="/products"
-              className="hidden items-center gap-1 text-sm font-medium text-primary hover:underline sm:inline-flex"
-            >
-              View all <ArrowUpRight className="size-3.5" />
-            </Link>
-          </div>
-          {featuredProducts.length === 0 ? (
-            <div className="mt-8">
-              <ContentRequired
-                title="No products published yet"
-                description="Featured products will appear here once the catalogue is populated in the admin CMS."
-              />
-            </div>
-          ) : (
-            <div className="mt-8 grid gap-6 sm:grid-cols-2 lg:grid-cols-3">
-              {featuredProducts.map((product) => (
-                <Card key={product.id} className="overflow-hidden border-border/70">
-                  <div className="h-1.5 bg-brand-cta" />
-                  <CardContent className="p-5">
-                    <p className="font-medium text-foreground">{product.name}</p>
-                    <p className="mt-1 text-sm text-muted-foreground line-clamp-2">
-                      {product.short_description ?? "Content required"}
-                    </p>
-                  </CardContent>
-                </Card>
-              ))}
-            </div>
           )}
         </section>
 
-        {/* How ordering works */}
-        <section className="bg-secondary/40">
-          <div className="mx-auto max-w-7xl px-4 py-20 sm:px-6 lg:px-8">
-            <h2 className="text-2xl font-bold tracking-tight text-foreground">
-              How Ordering Works
-            </h2>
-            <div className="relative mt-12 grid gap-10 sm:grid-cols-5">
-              <div className="absolute top-6 right-0 left-0 hidden h-px bg-border sm:block" />
-              {HOW_IT_WORKS.map((item) => (
-                <div key={item.step} className="relative flex flex-col gap-3">
-                  <span className="relative z-10 flex size-12 items-center justify-center rounded-full bg-brand-cta text-sm font-bold text-white shadow-sm">
-                    {item.step}
-                  </span>
-                  <p className="font-semibold text-foreground">{item.label}</p>
-                  <p className="text-sm text-muted-foreground">{item.description}</p>
-                </div>
+        {/* How it works */}
+        <section className="bg-secondary/30 py-20">
+          <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
+            <ScrollReveal className="max-w-2xl">
+              <span className="text-sm font-semibold tracking-wide text-primary uppercase">
+                Our Process
+              </span>
+              <h2 className="mt-3 text-3xl font-bold tracking-tight text-foreground sm:text-4xl">
+                How Ordering Works
+              </h2>
+            </ScrollReveal>
+            <div className="mt-12 grid gap-5 sm:grid-cols-2 lg:grid-cols-4">
+              {HOW_IT_WORKS.map(({ icon: Icon, label, description }, i) => (
+                <ScrollReveal key={label} direction="up" className={`delay-${i}`}>
+                  <Card className="h-full border-border/70">
+                    <CardContent className="flex h-full flex-col p-6">
+                      <span className="flex size-11 items-center justify-center rounded-xl bg-brand-cta text-white">
+                        <Icon className="size-5" />
+                      </span>
+                      <p className="mt-5 font-semibold text-foreground">{label}</p>
+                      <p className="mt-1.5 text-sm text-muted-foreground">{description}</p>
+                    </CardContent>
+                  </Card>
+                </ScrollReveal>
               ))}
             </div>
           </div>
-        </section>
-
-        {/* Portfolio */}
-        <section className="mx-auto max-w-7xl px-4 py-20 sm:px-6 lg:px-8">
-          <h2 className="text-2xl font-bold tracking-tight text-foreground">
-            Actual D&amp;M Projects
-          </h2>
-          {portfolio.length === 0 ? (
-            <div className="mt-8">
-              <ContentRequired
-                title="No portfolio projects published yet"
-                description="Real D&M production work will be shown here — never stock photography presented as D&M's own work."
-              />
-            </div>
-          ) : (
-            <div className="mt-8 grid gap-6 sm:grid-cols-2 lg:grid-cols-3">
-              {portfolio.map((project) => (
-                <Card key={project.id}>
-                  <CardContent className="p-5">
-                    <p className="font-medium text-foreground">{project.title}</p>
-                    <p className="mt-1 text-sm text-muted-foreground">
-                      {project.industry ?? "Content required"}
-                    </p>
-                  </CardContent>
-                </Card>
-              ))}
-            </div>
-          )}
         </section>
 
         {/* Testimonials */}
-        <section className="border-t border-border bg-secondary/40">
-          <div className="mx-auto max-w-7xl px-4 py-20 sm:px-6 lg:px-8">
-            <h2 className="text-2xl font-bold tracking-tight text-foreground">
-              Why Businesses Choose D&amp;M
-            </h2>
+        <section className="py-20">
+          <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
+            <ScrollReveal>
+              <h2 className="text-3xl font-bold tracking-tight text-foreground sm:text-4xl">
+                Why Businesses Choose D&amp;M
+              </h2>
+            </ScrollReveal>
             {testimonials.length === 0 ? (
               <div className="mt-8">
                 <ContentRequired
@@ -411,9 +380,9 @@ export default async function HomePage() {
               <Button
                 size="lg"
                 nativeButton={false}
-                className="bg-brand-cta text-white shadow-lg shadow-black/20 hover:opacity-90"
+                className="rounded-full bg-brand-cta text-white shadow-lg shadow-black/20 hover:opacity-90"
                 render={
-                  <Link href="/order">
+                  <Link href="/products">
                     Request a Quote <ArrowRight className="ms-1 size-4" />
                   </Link>
                 }
@@ -423,7 +392,7 @@ export default async function HomePage() {
                   size="lg"
                   variant="outline"
                   nativeButton={false}
-                  className="border-white/25 bg-white/5 text-white hover:bg-white/10"
+                  className="rounded-full border-white/25 bg-white/5 text-white hover:bg-white/10"
                   render={
                     <a href={`tel:${company.phone_primary}`}>
                       <Phone className="size-4" /> Call D&amp;M

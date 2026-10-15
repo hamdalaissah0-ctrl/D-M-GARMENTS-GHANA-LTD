@@ -237,3 +237,23 @@ export async function getCustomerDetail(customerId: string) {
   if (!customer) return null
   return { customer, orders: orders ?? [], communications: communications ?? [] }
 }
+
+export async function getCategoryWithGallery(slug: string) {
+  const supabase = await createClient()
+  const { data: category } = await supabase
+    .from("categories")
+    .select("*")
+    .eq("slug", slug)
+    .eq("status", "published")
+    .single()
+
+  if (!category) return null
+
+  const { data: images } = await supabase
+    .from("category_images")
+    .select("*")
+    .eq("category_id", category.id)
+    .order("sort_order", { ascending: true })
+
+  return { category, images: images ?? [] }
+}
