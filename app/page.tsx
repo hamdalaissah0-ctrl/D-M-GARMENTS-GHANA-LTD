@@ -68,13 +68,18 @@ export default async function HomePage() {
       <main className="flex-1">
         {/* Hero */}
         <section className="relative overflow-hidden bg-brand-hero text-white">
-          {/* eslint-disable-next-line @next/next/no-img-element */}
-          <img
-            src={`${MEDIA_BASE}/branding/hero-banner.png`}
-            alt="D&M Garments — school uniforms, fabric printing and embroidery"
-            className="absolute inset-0 size-full object-cover opacity-25"
+          <div
+            className="pointer-events-none absolute inset-0 opacity-[0.06]"
+            style={{
+              backgroundImage:
+                "linear-gradient(to right, white 1px, transparent 1px), linear-gradient(to bottom, white 1px, transparent 1px)",
+              backgroundSize: "48px 48px",
+            }}
           />
-          <div className="absolute inset-0 bg-gradient-to-r from-black/75 via-black/55 to-black/20" />
+          <div
+            className="pointer-events-none absolute -top-32 -right-32 size-96 rounded-full bg-primary/20 blur-3xl"
+            aria-hidden
+          />
           <div className="relative mx-auto max-w-7xl px-4 py-24 sm:px-6 sm:py-32 lg:px-8">
             <div className="max-w-2xl">
               <span className="inline-flex items-center gap-2 rounded-full border border-white/15 bg-white/5 px-3 py-1 text-xs font-medium tracking-wide text-white/80 uppercase">
@@ -190,9 +195,9 @@ export default async function HomePage() {
             <ScrollReveal direction="left" className="relative">
               {/* eslint-disable-next-line @next/next/no-img-element */}
               <img
-                src={`${MEDIA_BASE}/branding/production-equipment.png`}
-                alt="D&M Garments production equipment — DTF and UV printing"
-                className="w-full rounded-2xl border border-border object-cover shadow-sm"
+                src={`${MEDIA_BASE}/products/school-uniform-navy.png`}
+                alt="D&M Garments — school uniform, manufactured in-house"
+                className="aspect-[4/5] w-full rounded-2xl border border-border object-cover shadow-sm"
               />
               <div className="absolute -bottom-6 -left-4 flex items-center gap-3 rounded-2xl border border-border bg-card px-5 py-4 shadow-md sm:-left-6">
                 <span className="flex size-10 shrink-0 items-center justify-center rounded-full bg-primary">
