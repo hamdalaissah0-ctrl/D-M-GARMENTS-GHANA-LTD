@@ -17,7 +17,7 @@ export default async function AboutPage() {
         <p className="text-muted-foreground">
           {company?.company_name ?? "D&M Garments Ghana Limited"} is a garment
           manufacturing and branding business based at{" "}
-          {company?.address ?? "Content required"}, Ghana.
+          {company?.address ?? "Content required"}.
         </p>
         <ContentRequired
           title="Company history required"
