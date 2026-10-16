@@ -21,7 +21,7 @@ Last updated: 2026-10-16
 | 12 Customer Request Tracking | MISSING — no public `/track` page |
 | 13 Admin System | PASS — orders/customers/categories/products/quotes/settings/staff all live |
 | 14 CMS | PASS — Testimonials/FAQs/Portfolio admin shipped and verified 2026-10-16 |
-| 15 Security | PARTIAL — RLS, server-side validation, auth/authz, signed URLs, audit logs, Turnstile (test keys) all in place; MISSING: real production Turnstile keys, rate limiting, Sentry |
+| 15 Security | PASS — RLS, server-side validation, auth/authz, signed URLs, audit logs, Turnstile (real production keys, confirmed working by the user from a real browser 2026-10-16) all in place; MISSING: rate limiting, Sentry |
 | 16 SEO | MISSING — no metadata factory, sitemap/robots/JSON-LD audit done yet |
 | 17 Analytics | MISSING — no events instrumented |
 | 18 Performance | NOT AUDITED |
@@ -40,7 +40,7 @@ Last updated: 2026-10-16
 - `ContentRequired` empty-state pattern (central to the no-fake-content rule)
 - Ported `components/template/*` (MIT-licensed, real content, already recolored)
 - Lucide as sole icon family (already matches the new spec)
-- Turnstile bot protection on `/order`, the quick-order form, and `/contact` — verified end-to-end 2026-10-16 (widget renders, successful submission with a valid token, 403 rejection with no token)
+- Turnstile bot protection on `/order`, the quick-order form, and `/contact` — real production keys live on all environments, confirmed working by the user from a real browser 2026-10-16
 
 ### REFACTOR (works, but should be tightened if touched again)
 - `lib/supabase/queries.ts` — single growing file; fine at current size, split by domain if it keeps growing
@@ -53,7 +53,6 @@ Last updated: 2026-10-16
 - Nothing identified as dead code in this audit pass.
 
 ### MISSING (named by the new spec, not yet built — prioritize per user request, not automatically)
-- **Real production Cloudflare Turnstile keys.** Code and plumbing are done (2026-10-16) but every environment (`.env.local`, the Supabase Edge Function secret, Vercel production) is still running Cloudflare's published always-pass test keys. The user must create a Turnstile widget for the production domain in their own Cloudflare dashboard (this requires their account — not something an agent can do on their behalf) and hand over the real site key + secret key so they can replace the test values everywhere.
 - `notification_logs` table + per-channel delivery status
 - Public `/track` page (order/quote status by reference)
 - WhatsApp Cloud API (currently manual `wa.me` links only)
