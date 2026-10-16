@@ -31,3 +31,8 @@
 **Decision:** Credential isolation workaround — `git commit` via the Bash tool, `git push` always via the Terminal panel.
 **Reason:** `gh`/git credentials are isolated per-shell on this machine between the Bash tool and the Terminal panel (separate Windows Credential Manager scopes); Bash-tool pushes fail silently/require re-auth.
 **Implication:** Never attempt `git push` from the Bash tool on this machine — route through `mcp__terminal__run_in_terminal` every time.
+
+## ADR-007
+**Decision:** Load the Cloudflare Turnstile script directly (official `challenges.cloudflare.com/turnstile/v0/api.js`) in a small hand-written `TurnstileWidget` client component, rather than adding a third-party React wrapper package.
+**Reason:** Avoids adding a new dependency for a ~60-line integration; keeps to the "no duplicate/unnecessary libraries" rule. Verification happens server-side in both Edge Functions (`_shared/turnstile.ts`) via `siteverify`, matching the spec's required flow (never trust the client-side token alone).
+**Implication:** All three public forms (`/order`, the per-category quick-order form, `/contact`) require a valid Turnstile token before submission; the Edge Functions reject with 403 if verification fails. Running on Cloudflare's published test keys in every environment until the user supplies real production keys from their own Cloudflare dashboard (account creation/site verification is not something an agent can do on the user's behalf) — see `IMPLEMENTATION-STATUS.md`.

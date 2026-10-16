@@ -14,6 +14,7 @@ import {
 import { Input } from "@/components/ui/input"
 import { Label } from "@/components/ui/label"
 import { cn } from "cn"
+import { TurnstileWidget } from "@/components/shared/turnstile-widget"
 import type { CompanyProfile } from "@/lib/supabase/queries"
 
 export function QuickOrderForm({
@@ -33,10 +34,15 @@ export function QuickOrderForm({
   const [phone, setPhone] = useState("")
   const [submitting, setSubmitting] = useState(false)
   const [result, setResult] = useState<string | null>(null)
+  const [turnstileToken, setTurnstileToken] = useState<string | null>(null)
 
   async function handleSubmit() {
     if (!fullName.trim() || !phone.trim()) {
       toast.error("Please enter your name and phone number")
+      return
+    }
+    if (!turnstileToken) {
+      toast.error("Please complete the verification check below")
       return
     }
     setSubmitting(true)
@@ -61,6 +67,7 @@ export function QuickOrderForm({
               },
             ],
             customer_description: [size ? `Size: ${size}` : null, details].filter(Boolean).join("\n"),
+            turnstile_token: turnstileToken,
           }),
         }
       )
@@ -73,6 +80,7 @@ export function QuickOrderForm({
           ? e.message
           : "We couldn't submit your request right now. Please try again or contact D&M directly."
       )
+      setTurnstileToken(null)
     } finally {
       setSubmitting(false)
     }
@@ -194,10 +202,12 @@ export function QuickOrderForm({
         </div>
       </div>
 
+      <TurnstileWidget onVerify={setTurnstileToken} onExpire={() => setTurnstileToken(null)} />
+
       <Button
         size="lg"
         className="w-full bg-brand-cta text-white"
-        disabled={submitting}
+        disabled={submitting || !turnstileToken}
         onClick={handleSubmit}
       >
         {submitting ? <Loader2 className="size-4 animate-spin" /> : null}

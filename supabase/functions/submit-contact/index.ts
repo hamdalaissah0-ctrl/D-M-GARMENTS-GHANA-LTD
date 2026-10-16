@@ -1,11 +1,13 @@
 import { createClient } from "jsr:@supabase/supabase-js@2"
 import { corsHeaders, handleOptions } from "../_shared/cors.ts"
+import { verifyTurnstile } from "../_shared/turnstile.ts"
 
 interface SubmitContactBody {
   full_name: string
   email?: string
   phone?: string
   message: string
+  turnstile_token?: string
 }
 
 function isValidBody(body: unknown): body is SubmitContactBody {
@@ -45,6 +47,15 @@ Deno.serve(async (req) => {
     return new Response(
       JSON.stringify({ error: "Request failed validation" }),
       { status: 422, headers: { ...corsHeaders, "Content-Type": "application/json" } }
+    )
+  }
+
+  const clientIp = req.headers.get("cf-connecting-ip") ?? req.headers.get("x-forwarded-for")
+  const turnstileOk = await verifyTurnstile(body.turnstile_token, clientIp)
+  if (!turnstileOk) {
+    return new Response(
+      JSON.stringify({ error: "Verification failed. Please reload and try again." }),
+      { status: 403, headers: { ...corsHeaders, "Content-Type": "application/json" } }
     )
   }
 

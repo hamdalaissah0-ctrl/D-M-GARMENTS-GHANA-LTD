@@ -7,6 +7,7 @@
 import { createClient } from "jsr:@supabase/supabase-js@2"
 import { corsHeaders, handleOptions } from "../_shared/cors.ts"
 import { createNotificationProvider } from "../_shared/notifications.ts"
+import { verifyTurnstile } from "../_shared/turnstile.ts"
 
 interface OrderItemInput {
   product_id?: string
@@ -36,6 +37,7 @@ interface SubmitOrderBody {
   preferred_deadline?: string
   delivery_location?: string
   uploaded_files?: UploadedFileInput[]
+  turnstile_token?: string
 }
 
 const MAX_FILES = 10
@@ -119,6 +121,15 @@ Deno.serve(async (req) => {
     return new Response(
       JSON.stringify({ error: "Request failed validation" }),
       { status: 422, headers: { ...corsHeaders, "Content-Type": "application/json" } }
+    )
+  }
+
+  const clientIp = req.headers.get("cf-connecting-ip") ?? req.headers.get("x-forwarded-for")
+  const turnstileOk = await verifyTurnstile(body.turnstile_token, clientIp)
+  if (!turnstileOk) {
+    return new Response(
+      JSON.stringify({ error: "Verification failed. Please reload and try again." }),
+      { status: 403, headers: { ...corsHeaders, "Content-Type": "application/json" } }
     )
   }
 

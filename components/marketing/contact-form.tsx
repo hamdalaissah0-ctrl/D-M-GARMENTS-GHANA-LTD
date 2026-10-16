@@ -19,6 +19,7 @@ import {
   FormLabel,
   FormMessage,
 } from "@/components/ui/form"
+import { TurnstileWidget } from "@/components/shared/turnstile-widget"
 
 const contactSchema = z.object({
   full_name: z.string().trim().min(2, "Full name is required"),
@@ -32,6 +33,7 @@ type ContactInput = z.infer<typeof contactSchema>
 export function ContactForm() {
   const [submitting, setSubmitting] = useState(false)
   const [sent, setSent] = useState(false)
+  const [turnstileToken, setTurnstileToken] = useState<string | null>(null)
 
   const form = useForm<ContactInput>({
     resolver: zodResolver(contactSchema),
@@ -39,6 +41,10 @@ export function ContactForm() {
   })
 
   async function onSubmit(values: ContactInput) {
+    if (!turnstileToken) {
+      toast.error("Please complete the verification check below")
+      return
+    }
     setSubmitting(true)
     try {
       const res = await fetch(
@@ -54,6 +60,7 @@ export function ContactForm() {
             email: values.email || undefined,
             phone: values.phone || undefined,
             message: values.message,
+            turnstile_token: turnstileToken,
           }),
         }
       )
@@ -68,6 +75,7 @@ export function ContactForm() {
           ? err.message
           : "We couldn't send your message right now. Please try again or contact D&M directly."
       )
+      setTurnstileToken(null)
     } finally {
       setSubmitting(false)
     }
@@ -144,7 +152,8 @@ export function ContactForm() {
             </FormItem>
           )}
         />
-        <Button type="submit" disabled={submitting}>
+        <TurnstileWidget onVerify={setTurnstileToken} onExpire={() => setTurnstileToken(null)} />
+        <Button type="submit" disabled={submitting || !turnstileToken}>
           {submitting ? <Loader2 className="size-4 animate-spin" /> : null}
           {submitting ? "Sending..." : "Send Message"}
         </Button>

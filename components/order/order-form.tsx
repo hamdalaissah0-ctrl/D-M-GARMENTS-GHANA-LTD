@@ -28,6 +28,7 @@ import {
   validateFile,
   type UploadedFile,
 } from "@/lib/supabase/upload"
+import { TurnstileWidget } from "@/components/shared/turnstile-widget"
 
 export function OrderForm() {
   const idempotencyKey = useMemo(() => crypto.randomUUID(), [])
@@ -35,6 +36,7 @@ export function OrderForm() {
   const [uploading, setUploading] = useState(false)
   const [submitting, setSubmitting] = useState(false)
   const [result, setResult] = useState<{ orderNumber: string } | null>(null)
+  const [turnstileToken, setTurnstileToken] = useState<string | null>(null)
 
   const form = useForm<OrderRequestFormInput, unknown, OrderRequestInput>({
     resolver: zodResolver(orderRequestSchema),
@@ -90,6 +92,10 @@ export function OrderForm() {
   }
 
   async function onSubmit(values: OrderRequestInput) {
+    if (!turnstileToken) {
+      toast.error("Please complete the verification check below")
+      return
+    }
     setSubmitting(true)
     try {
       const res = await fetch(
@@ -113,6 +119,7 @@ export function OrderForm() {
             preferred_deadline: values.preferred_deadline || undefined,
             delivery_location: values.delivery_location || undefined,
             uploaded_files: uploadedFiles,
+            turnstile_token: turnstileToken,
           }),
         }
       )
@@ -130,6 +137,7 @@ export function OrderForm() {
           ? err.message
           : "We couldn't submit your request right now. Your information has not been lost — please try again or contact D&M directly."
       )
+      setTurnstileToken(null)
     } finally {
       setSubmitting(false)
     }
@@ -392,7 +400,14 @@ export function OrderForm() {
           </div>
         </section>
 
-        <Button type="submit" size="lg" disabled={submitting || uploading} className="w-full sm:w-auto">
+        <TurnstileWidget onVerify={setTurnstileToken} onExpire={() => setTurnstileToken(null)} />
+
+        <Button
+          type="submit"
+          size="lg"
+          disabled={submitting || uploading || !turnstileToken}
+          className="w-full sm:w-auto"
+        >
           {submitting ? <Loader2 className="size-4 animate-spin" /> : null}
           {submitting ? "Submitting..." : "Submit Request"}
         </Button>

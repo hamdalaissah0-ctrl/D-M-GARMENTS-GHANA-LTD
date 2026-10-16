@@ -15,13 +15,13 @@ Last updated: 2026-10-16
 | 06 Product Configurator | PARTIAL BY DESIGN — single-item quick-order (size/qty/details), not a multi-step configurator (ADR-004: never requested) |
 | 07 Quotation Basket | NOT BUILT BY DESIGN — see ADR-004; revisit only on explicit request |
 | 08 Database | PASS — 7 migrations applied, live schema matches app |
-| 09 Quotation/Order Backend | PASS — idempotent submission, audit trail, RLS; MISSING: Turnstile |
+| 09 Quotation/Order Backend | PASS — idempotent submission, audit trail, RLS, server-verified Turnstile on all 3 public forms (2026-10-16) |
 | 10 File Storage | PASS — private order-files bucket + public media bucket, correctly separated |
 | 11 Notifications | PARTIAL — SMS (Arkesel) live; WhatsApp manual-link only; email stubbed; no `notification_logs` delivery-status table |
 | 12 Customer Request Tracking | MISSING — no public `/track` page |
 | 13 Admin System | PASS — orders/customers/categories/products/quotes/settings/staff all live |
 | 14 CMS | PASS — Testimonials/FAQs/Portfolio admin shipped and verified 2026-10-16 |
-| 15 Security | PARTIAL — RLS, server-side validation, auth/authz, signed URLs, audit logs all in place; MISSING: Turnstile, rate limiting, Sentry |
+| 15 Security | PARTIAL — RLS, server-side validation, auth/authz, signed URLs, audit logs, Turnstile (test keys) all in place; MISSING: real production Turnstile keys, rate limiting, Sentry |
 | 16 SEO | MISSING — no metadata factory, sitemap/robots/JSON-LD audit done yet |
 | 17 Analytics | MISSING — no events instrumented |
 | 18 Performance | NOT AUDITED |
@@ -40,6 +40,7 @@ Last updated: 2026-10-16
 - `ContentRequired` empty-state pattern (central to the no-fake-content rule)
 - Ported `components/template/*` (MIT-licensed, real content, already recolored)
 - Lucide as sole icon family (already matches the new spec)
+- Turnstile bot protection on `/order`, the quick-order form, and `/contact` — verified end-to-end 2026-10-16 (widget renders, successful submission with a valid token, 403 rejection with no token)
 
 ### REFACTOR (works, but should be tightened if touched again)
 - `lib/supabase/queries.ts` — single growing file; fine at current size, split by domain if it keeps growing
@@ -52,7 +53,7 @@ Last updated: 2026-10-16
 - Nothing identified as dead code in this audit pass.
 
 ### MISSING (named by the new spec, not yet built — prioritize per user request, not automatically)
-- Cloudflare Turnstile on `/order` and `/contact`
+- **Real production Cloudflare Turnstile keys.** Code and plumbing are done (2026-10-16) but every environment (`.env.local`, the Supabase Edge Function secret, Vercel production) is still running Cloudflare's published always-pass test keys. The user must create a Turnstile widget for the production domain in their own Cloudflare dashboard (this requires their account — not something an agent can do on their behalf) and hand over the real site key + secret key so they can replace the test values everywhere.
 - `notification_logs` table + per-channel delivery status
 - Public `/track` page (order/quote status by reference)
 - WhatsApp Cloud API (currently manual `wa.me` links only)
