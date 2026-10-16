@@ -15,11 +15,10 @@
 | `/products/[category]` | Jiji-style PDP: `SampleGallery` + `QuickOrderForm` |
 | `/products/[category]/[product]` | Individual product detail |
 | `/order` | Original multi-item RFQ form (fallback, kept alongside per-category quick order) |
+| `/track` | Public order status lookup by order number + phone, Turnstile-gated (added 2026-10-16) |
 | `/privacy`, `/terms` | Honest "legal review required" placeholders |
 | `/auth/login` | Staff login |
 | `/not-found` | 404 |
-
-Not yet built: `/track` (public order/quote status lookup by reference).
 
 ## Admin (`/admin/*`, auth-guarded by `proxy.ts`)
 

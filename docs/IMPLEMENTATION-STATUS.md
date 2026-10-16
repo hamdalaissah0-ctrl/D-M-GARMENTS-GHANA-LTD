@@ -18,7 +18,7 @@ Last updated: 2026-10-16
 | 09 Quotation/Order Backend | PASS — idempotent submission, audit trail, RLS, server-verified Turnstile on all 3 public forms (2026-10-16) |
 | 10 File Storage | PASS — private order-files bucket + public media bucket, correctly separated |
 | 11 Notifications | PASS — SMS (Arkesel) live for both orders and contact messages; `notification_events` table tracks per-channel delivery status (channel/recipient/status/attempts/error), surfaced in the admin order detail page (2026-10-16). WhatsApp still manual-link only, email still stubbed — acceptable per MISSING list, not required for PASS |
-| 12 Customer Request Tracking | MISSING — no public `/track` page |
+| 12 Customer Request Tracking | PASS — public `/track` page, Turnstile-gated `track_order_request()` RPC matches by order number + last-9-digits phone, returns only customer-safe fields (no internal notes/staff names), never confirms/denies which part of a wrong pair was incorrect (2026-10-16) |
 | 13 Admin System | PASS — orders/messages/customers/categories/products/quotes/settings/staff all live |
 | 14 CMS | PASS — Testimonials/FAQs/Portfolio admin shipped and verified 2026-10-16 |
 | 15 Security | PASS — RLS, server-side validation, auth/authz, signed URLs, audit logs, Turnstile (real production keys, confirmed working by the user from a real browser 2026-10-16) all in place; MISSING: rate limiting, Sentry |
@@ -42,6 +42,7 @@ Last updated: 2026-10-16
 - Lucide as sole icon family (already matches the new spec)
 - Turnstile bot protection on `/order`, the quick-order form, and `/contact` — real production keys live on all environments, confirmed working by the user from a real browser 2026-10-16
 - Admin Messages inbox (`/admin/messages`) and order-detail notification-delivery visibility — closes the gap where contact-form submissions were stored but never surfaced to staff or alerted by SMS; verified end-to-end 2026-10-16
+- Public order tracking (`/track`) — `track_order_request()` RPC verified directly (correct pair returns data, wrong phone returns nothing); linked from the footer and both order-success confirmations; 2026-10-16
 
 ### REFACTOR (works, but should be tightened if touched again)
 - `lib/supabase/queries.ts` — single growing file; fine at current size, split by domain if it keeps growing
@@ -54,7 +55,6 @@ Last updated: 2026-10-16
 - Nothing identified as dead code in this audit pass.
 
 ### MISSING (named by the new spec, not yet built — prioritize per user request, not automatically)
-- Public `/track` page (order/quote status by reference)
 - WhatsApp Cloud API (currently manual `wa.me` links only)
 - Groq AI integration (env var present, nothing calls it)
 - Sentry error monitoring, Vercel Analytics events

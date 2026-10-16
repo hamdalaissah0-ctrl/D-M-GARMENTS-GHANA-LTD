@@ -1526,6 +1526,17 @@ export type Database = {
           order_number: string
         }[]
       }
+      track_order_request: {
+        Args: { p_order_number: string; p_phone: string }
+        Returns: {
+          created_at: string
+          history: Json
+          item_count: number
+          order_number: string
+          preferred_deadline: string
+          status: Database["public"]["Enums"]["order_status"]
+        }[]
+      }
     }
     Enums: {
       communication_channel: "call" | "whatsapp" | "sms" | "email" | "in_person"

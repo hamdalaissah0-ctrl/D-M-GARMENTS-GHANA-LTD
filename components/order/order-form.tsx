@@ -1,6 +1,7 @@
 "use client"
 
 import { useMemo, useState } from "react"
+import Link from "next/link"
 import { useFieldArray, useForm } from "react-hook-form"
 import { zodResolver } from "@hookform/resolvers/zod"
 import { toast } from "sonner"
@@ -157,6 +158,9 @@ export function OrderForm() {
           <p className="max-w-sm text-sm text-muted-foreground">
             Our team will review your request and contact you using the details you provided.
           </p>
+          <Link href="/track" className="text-sm font-medium text-primary hover:underline">
+            Track your request status
+          </Link>
         </CardContent>
       </Card>
     )

@@ -1,6 +1,7 @@
 "use client"
 
 import { useMemo, useState } from "react"
+import Link from "next/link"
 import { toast } from "sonner"
 import { Phone, MessageCircle, Minus, Plus, CheckCircle2, Loader2 } from "lucide-react"
 import { Button } from "@/components/ui/button"
@@ -228,6 +229,9 @@ export function QuickOrderForm({
             <p className="text-sm text-muted-foreground">
               Our team will review your request and contact you using the details you provided.
             </p>
+            <Link href="/track" className="text-sm font-medium text-primary hover:underline">
+              Track your request status
+            </Link>
           </div>
         </DialogContent>
       </Dialog>

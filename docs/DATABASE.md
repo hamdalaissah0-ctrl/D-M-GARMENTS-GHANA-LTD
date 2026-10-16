@@ -12,6 +12,7 @@ Live Supabase project: `otscslkmvhunzlxfrqse`. All schema changes go through `su
 6. `20261009022916_quote_number_generator.sql` — `QT-YYYY-NNNNNN` sequence/generator for quotes.
 7. `20261015223122_category_galleries_and_sizes.sql` — `category_images` table (Jiji-style sample galleries) + `categories.available_sizes text[]` (default `['S','M','L','XL','XXL','XXXL']`).
 8. `20261016120000_contact_notifications.sql` — adds `notification_events.contact_submission_id` (nullable FK to `contact_submissions`) and updates `submit_contact_request()` to also queue a staff SMS notification, same pattern as orders.
+9. `20261016130000_order_tracking.sql` — `track_order_request(p_order_number, p_phone)` security-definer RPC for the public `/track` page; matches by order number + last-9-digits phone, returns only customer-safe fields (no internal notes, no staff names), returns nothing on a mismatch rather than raising (no enumeration oracle).
 
 ## Identifiers
 
@@ -30,5 +31,4 @@ No separate `product-public` / `portfolio-public` split yet — both public imag
 
 ## Not yet built (named by the new spec, no current table)
 
-- Public order/quote tracking by reference + phone (`/track`) — no supporting query or RLS policy for anonymous-by-reference lookup exists yet.
 - `fabrics`, `colours`, `branding_methods` as normalized option tables — current catalogue stores available sizes as a `text[]` column on `categories`, not as relational option tables. Fine for the current size-only selector; would need real tables if fabric/colour/branding selection is added to the order flow.

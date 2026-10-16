@@ -67,6 +67,11 @@ export function SiteFooter({ company }: { company: CompanyProfile | null }) {
                 </Link>
               </li>
               <li>
+                <Link href="/track" className="hover:text-white">
+                  Track Your Order
+                </Link>
+              </li>
+              <li>
                 <Link href="/privacy" className="hover:text-white">
                   Privacy Policy
                 </Link>
