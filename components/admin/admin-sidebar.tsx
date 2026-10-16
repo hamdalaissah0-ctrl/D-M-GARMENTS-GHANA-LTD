@@ -12,6 +12,7 @@ import {
   UserCog,
   Settings,
   FileText,
+  MessageSquare,
 } from "lucide-react"
 import { LogoMark } from "@/components/layout/logo-mark"
 import { cn } from "cn"
@@ -20,6 +21,7 @@ import type { Profile } from "@/lib/supabase/queries"
 const NAV_ITEMS = [
   { href: "/admin", label: "Dashboard", icon: LayoutDashboard, exact: true },
   { href: "/admin/orders", label: "Orders", icon: ClipboardList },
+  { href: "/admin/messages", label: "Messages", icon: MessageSquare },
   { href: "/admin/customers", label: "Customers", icon: Users },
   { href: "/admin/quotes", label: "Quotes", icon: Quote },
   { href: "/admin/products", label: "Products", icon: Package },

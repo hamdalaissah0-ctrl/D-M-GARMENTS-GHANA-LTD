@@ -1,6 +1,7 @@
 import { createClient } from "jsr:@supabase/supabase-js@2"
 import { corsHeaders, handleOptions } from "../_shared/cors.ts"
 import { verifyTurnstile } from "../_shared/turnstile.ts"
+import { createNotificationProvider } from "../_shared/notifications.ts"
 
 interface SubmitContactBody {
   full_name: string
@@ -78,6 +79,37 @@ Deno.serve(async (req) => {
       JSON.stringify({ error: "We couldn't submit your message right now." }),
       { status: 500, headers: { ...corsHeaders, "Content-Type": "application/json" } }
     )
+  }
+
+  // Best-effort SMS notify — failure here must never fail the contact submission.
+  try {
+    const { data: pending } = await supabase
+      .from("notification_events")
+      .select("id, recipient, template, payload")
+      .eq("contact_submission_id", data)
+      .eq("status", "pending")
+
+    if (pending && pending.length > 0) {
+      const provider = createNotificationProvider()
+      for (const event of pending) {
+        const payload = event.payload as { full_name?: string; message?: string }
+        const message = `NEW D&M CONTACT MESSAGE\nFrom: ${payload.full_name}\nPhone: ${body.phone ?? "n/a"}\nMessage: ${payload.message}\nSubmitted: ${new Date().toISOString()}`
+
+        const result = await provider.sendSMS(event.recipient, message)
+
+        await supabase
+          .from("notification_events")
+          .update({
+            status: result.ok ? "sent" : "failed",
+            attempt_count: 1,
+            last_attempt_at: new Date().toISOString(),
+            error_message: result.ok ? null : result.error,
+          })
+          .eq("id", event.id)
+      }
+    }
+  } catch (notifyErr) {
+    console.error("notification dispatch failed", notifyErr)
   }
 
   return new Response(JSON.stringify({ id: data }), {

@@ -26,7 +26,8 @@ Not yet built: `/track` (public order/quote status lookup by reference).
 | Route | Purpose |
 |---|---|
 | `/admin` | Dashboard stats |
-| `/admin/orders`, `/admin/orders/[id]` | Order inbox + workspace (items/files/communications/notes/status history/assignment) |
+| `/admin/orders`, `/admin/orders/[id]` | Order inbox + workspace (items/files/communications/notes/status history/assignment/notification delivery status) |
+| `/admin/messages` | Contact-form message inbox, mark handled/unhandled (added 2026-10-16) |
 | `/admin/customers`, `/admin/customers/[id]` | Customer directory |
 | `/admin/categories` | Category CRUD |
 | `/admin/products`, `/admin/products/new`, `/admin/products/[id]` | Product CRUD |

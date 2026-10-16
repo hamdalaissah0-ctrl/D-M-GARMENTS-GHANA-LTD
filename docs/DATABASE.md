@@ -11,6 +11,7 @@ Live Supabase project: `otscslkmvhunzlxfrqse`. All schema changes go through `su
 5. `20261009022546_public_media_bucket.sql` — public `media` bucket, admin-only write policies (used for logo, category images, portfolio images).
 6. `20261009022916_quote_number_generator.sql` — `QT-YYYY-NNNNNN` sequence/generator for quotes.
 7. `20261015223122_category_galleries_and_sizes.sql` — `category_images` table (Jiji-style sample galleries) + `categories.available_sizes text[]` (default `['S','M','L','XL','XXL','XXXL']`).
+8. `20261016120000_contact_notifications.sql` — adds `notification_events.contact_submission_id` (nullable FK to `contact_submissions`) and updates `submit_contact_request()` to also queue a staff SMS notification, same pattern as orders.
 
 ## Identifiers
 
@@ -23,8 +24,11 @@ Internal PKs are UUID throughout. Customer-facing references use generated seque
 
 No separate `product-public` / `portfolio-public` split yet — both public image types share the one `media` bucket under different path prefixes (`branding/`, `categories/`, `portfolio/`). Acceptable at current scale; would only need splitting if access policies need to diverge per asset type.
 
+## Notifications
+
+`notification_events` (the project's equivalent of the spec's `notification_logs`) tracks channel/recipient/status (`pending/sent/failed/retrying`)/attempt_count/last_attempt_at/error_message, linked to either an order (`order_id`) or a contact message (`contact_submission_id`, added 2026-10-16). Both `submit_order_request()` and `submit_contact_request()` queue a row; both Edge Functions dispatch the SMS and update the row's status inline. No retry mechanism yet — a `retrying` status exists in the enum but nothing sets it.
+
 ## Not yet built (named by the new spec, no current table)
 
-- `notification_logs` with per-channel status (`queued/processing/sent/failed/retrying`) and provider message id — today SMS dispatch happens inline in the Edge Function with no persisted delivery-status row.
 - Public order/quote tracking by reference + phone (`/track`) — no supporting query or RLS policy for anonymous-by-reference lookup exists yet.
 - `fabrics`, `colours`, `branding_methods` as normalized option tables — current catalogue stores available sizes as a `text[]` column on `categories`, not as relational option tables. Fine for the current size-only selector; would need real tables if fabric/colour/branding selection is added to the order flow.

@@ -545,6 +545,7 @@ export type Database = {
         Row: {
           attempt_count: number
           channel: Database["public"]["Enums"]["notification_channel"]
+          contact_submission_id: string | null
           created_at: string
           error_message: string | null
           id: string
@@ -558,6 +559,7 @@ export type Database = {
         Insert: {
           attempt_count?: number
           channel: Database["public"]["Enums"]["notification_channel"]
+          contact_submission_id?: string | null
           created_at?: string
           error_message?: string | null
           id?: string
@@ -571,6 +573,7 @@ export type Database = {
         Update: {
           attempt_count?: number
           channel?: Database["public"]["Enums"]["notification_channel"]
+          contact_submission_id?: string | null
           created_at?: string
           error_message?: string | null
           id?: string
@@ -582,6 +585,13 @@ export type Database = {
           template?: string
         }
         Relationships: [
+          {
+            foreignKeyName: "notification_events_contact_submission_id_fkey"
+            columns: ["contact_submission_id"]
+            isOneToOne: false
+            referencedRelation: "contact_submissions"
+            referencedColumns: ["id"]
+          },
           {
             foreignKeyName: "notification_events_order_id_fkey"
             columns: ["order_id"]

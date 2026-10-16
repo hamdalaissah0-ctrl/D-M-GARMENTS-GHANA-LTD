@@ -90,7 +90,7 @@ export type OrderWithCustomer = Tables<"orders"> & {
 export async function getAdminDashboardStats() {
   const supabase = await createClient()
 
-  const [newOrders, pendingFollowUps, quotesPending, inProduction, completed] = await Promise.all([
+  const [newOrders, pendingFollowUps, quotesPending, inProduction, completed, newMessages] = await Promise.all([
     supabase.from("orders").select("id", { count: "exact", head: true }).eq("status", "new"),
     supabase
       .from("orders")
@@ -100,6 +100,7 @@ export async function getAdminDashboardStats() {
     supabase.from("quotes").select("id", { count: "exact", head: true }).in("status", ["draft", "sent"]),
     supabase.from("orders").select("id", { count: "exact", head: true }).eq("status", "in_production"),
     supabase.from("orders").select("id", { count: "exact", head: true }).eq("status", "completed"),
+    supabase.from("contact_submissions").select("id", { count: "exact", head: true }).eq("handled", false),
   ])
 
   return {
@@ -108,6 +109,7 @@ export async function getAdminDashboardStats() {
     quotesPending: quotesPending.count ?? 0,
     inProduction: inProduction.count ?? 0,
     completed: completed.count ?? 0,
+    newMessages: newMessages.count ?? 0,
   }
 }
 
@@ -167,7 +169,15 @@ export async function getOrdersList(filters: OrderListFilters) {
 export async function getOrderDetail(orderId: string) {
   const supabase = await createClient()
 
-  const [{ data: order }, { data: items }, { data: files }, { data: notes }, { data: history }, { data: communications }] =
+  const [
+    { data: order },
+    { data: items },
+    { data: files },
+    { data: notes },
+    { data: history },
+    { data: communications },
+    { data: notifications },
+  ] =
     await Promise.all([
       supabase.from("orders").select("*, customers(*)").eq("id", orderId).single(),
       supabase.from("order_items").select("*").eq("order_id", orderId).order("sort_order"),
@@ -187,11 +197,24 @@ export async function getOrderDetail(orderId: string) {
         .select("*, profiles(full_name)")
         .eq("order_id", orderId)
         .order("occurred_at", { ascending: false }),
+      supabase
+        .from("notification_events")
+        .select("*")
+        .eq("order_id", orderId)
+        .order("created_at", { ascending: false }),
     ])
 
   if (!order) return null
 
-  return { order, items: items ?? [], files: files ?? [], notes: notes ?? [], history: history ?? [], communications: communications ?? [] }
+  return {
+    order,
+    items: items ?? [],
+    files: files ?? [],
+    notes: notes ?? [],
+    history: history ?? [],
+    communications: communications ?? [],
+    notifications: notifications ?? [],
+  }
 }
 
 export async function getOrderFileSignedUrl(storagePath: string): Promise<string | null> {
@@ -236,6 +259,20 @@ export async function getCustomerDetail(customerId: string) {
   ])
   if (!customer) return null
   return { customer, orders: orders ?? [], communications: communications ?? [] }
+}
+
+export type NotificationEvent = Tables<"notification_events">
+
+export type ContactSubmission = Tables<"contact_submissions">
+
+export async function getContactSubmissions(filters: { handled?: boolean } = {}): Promise<ContactSubmission[]> {
+  const supabase = await createClient()
+  let query = supabase.from("contact_submissions").select("*").order("created_at", { ascending: false })
+  if (filters.handled !== undefined) {
+    query = query.eq("handled", filters.handled)
+  }
+  const { data } = await query.limit(300)
+  return data ?? []
 }
 
 export async function getCategoryWithGallery(slug: string) {

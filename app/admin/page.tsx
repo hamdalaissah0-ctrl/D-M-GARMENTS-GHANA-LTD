@@ -2,7 +2,7 @@ import Link from "next/link"
 import { Card, CardContent } from "@/components/ui/card"
 import { OrderStatusBadge } from "@/components/admin/order-status-badge"
 import { getAdminDashboardStats, getRecentOrders } from "@/lib/supabase/queries"
-import { Inbox, Clock, Quote, Factory, CheckCircle2 } from "lucide-react"
+import { Inbox, Clock, Quote, Factory, CheckCircle2, MessageSquare } from "lucide-react"
 import type { OrderStatus } from "@/lib/order-status"
 
 export default async function AdminDashboardPage() {
@@ -10,6 +10,7 @@ export default async function AdminDashboardPage() {
 
   const cards = [
     { label: "New Orders", value: stats.newOrders, icon: Inbox, href: "/admin/orders?status=new" },
+    { label: "New Messages", value: stats.newMessages, icon: MessageSquare, href: "/admin/messages" },
     { label: "Pending Follow-ups", value: stats.pendingFollowUps, icon: Clock, href: "/admin/orders" },
     { label: "Quotes Pending", value: stats.quotesPending, icon: Quote, href: "/admin/quotes" },
     { label: "In Production", value: stats.inProduction, icon: Factory, href: "/admin/orders?status=in_production" },
@@ -18,7 +19,7 @@ export default async function AdminDashboardPage() {
 
   return (
     <div className="space-y-8">
-      <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-5">
+      <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-6">
         {cards.map(({ label, value, icon: Icon, href }) => (
           <Link key={label} href={href}>
             <Card className="transition-shadow hover:shadow-md">

@@ -36,6 +36,7 @@ export default async function OrderDetailPage({ params }: { params: Promise<{ id
         notes={detail.notes}
         history={detail.history}
         communications={detail.communications}
+        notifications={detail.notifications}
         staff={staff}
       />
     </div>

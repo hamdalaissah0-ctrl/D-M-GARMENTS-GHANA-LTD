@@ -6,6 +6,7 @@ import Link from "next/link"
 import { toast } from "sonner"
 import { Phone, MessageCircle, Loader2, FileText, Download } from "lucide-react"
 import { Card, CardContent } from "@/components/ui/card"
+import { Badge } from "@/components/ui/badge"
 import { Button } from "@/components/ui/button"
 import { Textarea } from "@/components/ui/textarea"
 import { Input } from "@/components/ui/input"
@@ -35,6 +36,7 @@ type OrderFile = Tables<"order_files"> & { signedUrl: string | null }
 type OrderNote = Tables<"order_notes"> & { profiles: { full_name: string } | null }
 type StatusHistoryRow = Tables<"order_status_history"> & { profiles: { full_name: string } | null }
 type CommunicationRow = Tables<"communications"> & { profiles: { full_name: string } | null }
+type NotificationRow = Tables<"notification_events">
 type Profile = Tables<"profiles">
 
 export function OrderWorkspace({
@@ -44,6 +46,7 @@ export function OrderWorkspace({
   notes,
   history,
   communications,
+  notifications,
   staff,
 }: {
   order: Order
@@ -52,6 +55,7 @@ export function OrderWorkspace({
   notes: OrderNote[]
   history: StatusHistoryRow[]
   communications: CommunicationRow[]
+  notifications: NotificationRow[]
   staff: Profile[]
 }) {
   const router = useRouter()
@@ -395,6 +399,43 @@ export function OrderWorkspace({
             </div>
           </CardContent>
         </Card>
+
+        {/* Notification delivery */}
+        {notifications.length > 0 && (
+          <Card>
+            <CardContent className="p-5">
+              <h2 className="font-semibold text-foreground">Notifications</h2>
+              <ul className="mt-3 space-y-2">
+                {notifications.map((n) => (
+                  <li key={n.id} className="flex items-start justify-between gap-3 text-sm">
+                    <div className="min-w-0">
+                      <p className="text-foreground capitalize">
+                        {n.channel} to {n.recipient}
+                      </p>
+                      <p className="text-xs text-muted-foreground">
+                        {new Date(n.created_at).toLocaleString()}
+                      </p>
+                      {n.status === "failed" && n.error_message && (
+                        <p className="mt-0.5 text-xs text-destructive">{n.error_message}</p>
+                      )}
+                    </div>
+                    <Badge
+                      className={
+                        n.status === "sent"
+                          ? "bg-primary/10 text-primary"
+                          : n.status === "failed"
+                            ? "bg-destructive/10 text-destructive"
+                            : "bg-secondary text-secondary-foreground"
+                      }
+                    >
+                      {n.status}
+                    </Badge>
+                  </li>
+                ))}
+              </ul>
+            </CardContent>
+          </Card>
+        )}
 
         {/* Quote */}
         <Card>
