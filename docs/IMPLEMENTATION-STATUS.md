@@ -52,6 +52,7 @@ Last updated: 2026-10-17
 - RLS: `product_images`/`product_features`/`portfolio_images`/`category_images` now gated on their parent's draft/published status (were previously `using (true)`, directly queryable via the public REST API regardless of status) — verified with a throwaway draft product + image, confirmed anon gets `[]` for the draft and still sees active-product images, test rows cleaned up; 2026-10-17
 - Accessibility: zero `axe-core` violations across all 13 public routes (homepage, about, contact, faq, services, industries, portfolio, products, product detail, order, track, privacy, auth/login) — fixed 5 real issues found during the scan (unlabeled quantity input and gallery-thumbnail buttons, missing RFQ-form textarea label, FAQ accordion heading-order skip, missing login-page h1); 2026-10-17
 - Vercel region matched to Supabase — `vercel.json` sets `regions: ["lhr1"]` (London), confirmed deployed and live; warm page loads roughly halved (~1228ms → ~620ms `domContentLoaded`); 2026-10-17
+- Dedicated OG/social preview banner (1200×630) — composed from real D&M assets only (the real logo + a real, watermark-cropped product photo, brand green from `company_profile.brand_color_hex`, copy matching the homepage hero verbatim), uploaded to Supabase Storage, wired into `openGraph`/`twitter` metadata (card upgraded to `summary_large_image`). Deployed and confirmed live via `og:image`/`twitter:image` meta tags; 2026-10-17
 
 ### REFACTOR (works, but should be tightened if touched again)
 - `lib/supabase/queries.ts` — single growing file; fine at current size, split by domain if it keeps growing
@@ -67,7 +68,6 @@ Last updated: 2026-10-17
 - Groq AI integration — user asked directly 2026-10-17, chose to skip: no use case was ever defined (spec only said "planned"), and building a feature with no defined behavior would be invented scope. Revisit only if the user brings a concrete use case.
 - Sentry source-map upload (readable production stack traces) — optional, needs `SENTRY_AUTH_TOKEN` + org/project slug if the user wants it later
 - Legal document content (`/privacy`, `/terms`) — honest "legal review required" placeholders, need real content from the user or their lawyer; never fabricated
-- Dedicated OG/social preview banner image (1200×630) — current share image is the square logo (real, honest, but not an ideal aspect ratio); low priority
 - Supabase project backup/plan tier — could not check via the Supabase MCP connector (same permission restriction seen all session) or the dashboard; user should verify backup retention in their own Supabase project settings
 - Admin user roster review — staff accounts exist and work (verified via `/admin/staff` throughout this session); a full "who still needs access, who should be removed" review is a business decision for the user, not something to audit unprompted
 

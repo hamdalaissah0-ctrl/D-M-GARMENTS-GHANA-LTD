@@ -14,7 +14,7 @@ const SITE_URL = process.env.NEXT_PUBLIC_SITE_URL ?? "http://localhost:3000"
 const SITE_NAME = "D&M Garments Ghana Limited"
 const SITE_DESCRIPTION =
   "D&M Garments Ghana Limited manufactures hospitality, corporate, workwear and PPE uniforms with embroidery, DTF printing and branding — no minimum order quantity."
-const OG_LOGO = "https://otscslkmvhunzlxfrqse.supabase.co/storage/v1/object/public/media/branding/dm-logo.png"
+const OG_BANNER = "https://otscslkmvhunzlxfrqse.supabase.co/storage/v1/object/public/media/branding/og-banner.png"
 
 export const metadata: Metadata = {
   metadataBase: new URL(SITE_URL),
@@ -29,13 +29,13 @@ export const metadata: Metadata = {
     title: `${SITE_NAME} — Uniform & Garment Manufacturing`,
     description: SITE_DESCRIPTION,
     url: SITE_URL,
-    images: [{ url: OG_LOGO }],
+    images: [{ url: OG_BANNER, width: 1200, height: 630 }],
   },
   twitter: {
-    card: "summary",
+    card: "summary_large_image",
     title: `${SITE_NAME} — Uniform & Garment Manufacturing`,
     description: SITE_DESCRIPTION,
-    images: [OG_LOGO],
+    images: [OG_BANNER],
   },
 }
 
