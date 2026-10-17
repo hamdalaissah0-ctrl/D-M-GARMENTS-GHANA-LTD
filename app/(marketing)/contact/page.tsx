@@ -26,11 +26,23 @@ export default async function ContactPage() {
           </div>
           <div className="flex items-center gap-3 text-sm">
             <Phone className="size-4 text-primary" />
-            <span>{company?.phone_primary ?? "Content required"}</span>
+            {company?.phone_primary ? (
+              <a href={`tel:${company.phone_primary}`} className="hover:text-primary">
+                {company.phone_primary}
+              </a>
+            ) : (
+              <span>Content required</span>
+            )}
           </div>
           <div className="flex items-center gap-3 text-sm">
             <Mail className="size-4 text-primary" />
-            <span>{company?.email ?? "Content required"}</span>
+            {company?.email ? (
+              <a href={`mailto:${company.email}`} className="hover:text-primary">
+                {company.email}
+              </a>
+            ) : (
+              <span>Content required</span>
+            )}
           </div>
         </div>
         <ContactForm />

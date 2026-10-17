@@ -23,7 +23,7 @@ Last updated: 2026-10-16
 | 14 CMS | PASS — Testimonials/FAQs/Portfolio admin shipped and verified 2026-10-16 |
 | 15 Security | PASS — RLS, server-side validation, auth/authz, signed URLs, audit logs, Turnstile (real production keys, confirmed working by the user from a real browser 2026-10-16) all in place; MISSING: rate limiting, Sentry |
 | 16 SEO | PASS — `sitemap.ts`/`robots.ts` already existed (prior audit entry was stale); added `metadataBase`, sitewide OpenGraph/Twitter defaults, real favicon/apple-icon (replacing the default Next.js starter icon), Organization JSON-LD on the homepage, FAQPage JSON-LD on `/faq`, and the 3 missing routes (`/track`, `/privacy`, `/terms`) to the sitemap. Removed unused default Next.js starter SVGs from `public/`. Verified via live DOM inspection 2026-10-17 |
-| 17 Analytics | MISSING — no events instrumented |
+| 17 Analytics | PASS (code) / ACTION NEEDED (dashboard) — `@vercel/analytics` wired into the root layout (automatic pageviews) plus custom events: `order_submitted` (both order forms), `contact_submitted`, `phone_clicked`/`whatsapp_clicked` (quick-order form). Verified firing correctly in dev console 2026-10-17. User must toggle "Web Analytics" on for the project in the Vercel dashboard (Project → Analytics tab) for events to actually be collected in production — the code works regardless, but nothing is retained until that's enabled. Sentry still NOT STARTED |
 | 18 Performance | NOT AUDITED |
 | 19 Testing | MISSING — zero automated tests |
 | 20 Production | PARTIAL — deployed and live on Vercel; launch checklist (Turnstile, monitoring, Lighthouse, a11y scan) not run |
@@ -44,6 +44,7 @@ Last updated: 2026-10-16
 - Admin Messages inbox (`/admin/messages`) and order-detail notification-delivery visibility — closes the gap where contact-form submissions were stored but never surfaced to staff or alerted by SMS; verified end-to-end 2026-10-16
 - Public order tracking (`/track`) — `track_order_request()` RPC verified directly (correct pair returns data, wrong phone returns nothing); linked from the footer and both order-success confirmations; 2026-10-16
 - SEO: metadataBase, sitewide OG/Twitter defaults, real favicon/apple-icon, homepage Organization JSON-LD, FAQ page FAQPage JSON-LD, complete sitemap — verified via live DOM inspection 2026-10-17
+- Analytics: `@vercel/analytics` with pageviews + `order_submitted`/`contact_submitted`/`phone_clicked`/`whatsapp_clicked` custom events, verified firing in dev console 2026-10-17. Needs the Vercel dashboard toggle (see Phase 17 row) to actually collect data in production
 
 ### REFACTOR (works, but should be tightened if touched again)
 - `lib/supabase/queries.ts` — single growing file; fine at current size, split by domain if it keeps growing

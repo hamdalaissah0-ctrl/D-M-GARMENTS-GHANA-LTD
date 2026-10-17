@@ -2,6 +2,7 @@
 
 import { useMemo, useState } from "react"
 import Link from "next/link"
+import { track } from "@vercel/analytics"
 import { useFieldArray, useForm } from "react-hook-form"
 import { zodResolver } from "@hookform/resolvers/zod"
 import { toast } from "sonner"
@@ -132,6 +133,7 @@ export function OrderForm() {
       }
 
       setResult({ orderNumber: data.order_number })
+      track("order_submitted", { source: "full_rfq_form", item_count: values.items.length })
     } catch (err) {
       toast.error(
         err instanceof Error

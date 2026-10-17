@@ -2,6 +2,7 @@
 
 import { useMemo, useState } from "react"
 import Link from "next/link"
+import { track } from "@vercel/analytics"
 import { toast } from "sonner"
 import { Phone, MessageCircle, Minus, Plus, CheckCircle2, Loader2 } from "lucide-react"
 import { Button } from "@/components/ui/button"
@@ -75,6 +76,7 @@ export function QuickOrderForm({
       const data = await res.json()
       if (!res.ok) throw new Error(data.error ?? "Submission failed")
       setResult(data.order_number)
+      track("order_submitted", { category: categoryName, quantity })
     } catch (e) {
       toast.error(
         e instanceof Error
@@ -98,7 +100,7 @@ export function QuickOrderForm({
               nativeButton={false}
               className="flex-1"
               render={
-                <a href={`tel:${company.phone_primary}`}>
+                <a href={`tel:${company.phone_primary}`} onClick={() => track("phone_clicked", { source: "quick_order", category: categoryName })}>
                   <Phone className="size-4" /> Call Us
                 </a>
               }
@@ -116,6 +118,7 @@ export function QuickOrderForm({
                   )}`}
                   target="_blank"
                   rel="noreferrer"
+                  onClick={() => track("whatsapp_clicked", { source: "quick_order", category: categoryName })}
                 >
                   <MessageCircle className="size-4" /> WhatsApp
                 </a>

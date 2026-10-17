@@ -30,7 +30,10 @@ LOTTIE
 LottieFiles — for small success animations only (quote submitted, upload complete); prefer a simple SVG checkmark for the quote-success modal per the spec's own recommendation
 
 FONTS
-Google Fonts via next/font — current setup needs verification (see IMPLEMENTATION-STATUS.md)
+Google Fonts via next/font — confirmed: Inter loaded via next/font/google in app/layout.tsx
+
+ANALYTICS
+@vercel/analytics — pageviews + custom conversion events (order_submitted, contact_submitted, phone_clicked, whatsapp_clicked)
 ```
 
 ## Image hierarchy (binding)

@@ -4,6 +4,7 @@ import { useState } from "react"
 import { useForm } from "react-hook-form"
 import { zodResolver } from "@hookform/resolvers/zod"
 import { z } from "zod"
+import { track } from "@vercel/analytics"
 import { toast } from "sonner"
 import { CheckCircle2, Loader2 } from "lucide-react"
 
@@ -69,6 +70,7 @@ export function ContactForm() {
         throw new Error(data.error ?? "Submission failed")
       }
       setSent(true)
+      track("contact_submitted")
     } catch (err) {
       toast.error(
         err instanceof Error
