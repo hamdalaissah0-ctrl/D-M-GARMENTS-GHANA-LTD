@@ -35,12 +35,17 @@ export async function requestPasswordReset(formData: FormData) {
 
   const supabase = await createClient()
   const siteUrl = process.env.NEXT_PUBLIC_SITE_URL ?? "http://localhost:3000"
-  await supabase.auth.resetPasswordForEmail(email, {
+  const { error } = await supabase.auth.resetPasswordForEmail(email, {
     redirectTo: `${siteUrl}/auth/update-password`,
   })
 
-  // Always return the same message whether or not the email exists,
-  // so this can't be used to enumerate staff email addresses.
+  if (error) {
+    // Log the real reason server-side (e.g. redirect URL not on Supabase's
+    // allowlist) without leaking it to the client — the response stays the
+    // same either way so this can't be used to enumerate staff emails.
+    console.error("resetPasswordForEmail failed", error)
+  }
+
   return { sent: true }
 }
 
