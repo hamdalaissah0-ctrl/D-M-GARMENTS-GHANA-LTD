@@ -26,7 +26,7 @@ export default function LoginPage() {
             <LogoMark />
             <div>
               <p className="font-semibold text-white">D&amp;M Garments</p>
-              <p className="text-xs text-white/60">Staff sign in</p>
+              <h1 className="text-xs text-white/60">Staff sign in</h1>
             </div>
           </div>
 

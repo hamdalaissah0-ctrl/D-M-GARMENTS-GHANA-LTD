@@ -154,24 +154,32 @@ export function QuickOrderForm({
 
       {/* Quantity */}
       <div>
-        <p className="text-sm font-medium text-foreground">Quantity</p>
+        <Label htmlFor="quick-order-quantity">Quantity</Label>
         <div className="mt-2 flex items-center gap-3">
           <Button
             type="button"
             size="icon"
             variant="outline"
+            aria-label="Decrease quantity by 10"
             onClick={() => setQuantity((q) => Math.max(1, q - 10))}
           >
             <Minus className="size-4" />
           </Button>
           <Input
+            id="quick-order-quantity"
             type="number"
             min={1}
             value={quantity}
             onChange={(e) => setQuantity(parseInt(e.target.value, 10) || 1)}
             className="w-24 text-center"
           />
-          <Button type="button" size="icon" variant="outline" onClick={() => setQuantity((q) => q + 10)}>
+          <Button
+            type="button"
+            size="icon"
+            variant="outline"
+            aria-label="Increase quantity by 10"
+            onClick={() => setQuantity((q) => q + 10)}
+          >
             <Plus className="size-4" />
           </Button>
         </div>

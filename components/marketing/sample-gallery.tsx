@@ -40,6 +40,8 @@ export function SampleGallery({
             <button
               key={img.storage_path}
               type="button"
+              aria-label={`View ${alt} sample ${i + 1}`}
+              aria-pressed={i === active}
               onClick={() => setActive(i)}
               className={cn(
                 "size-16 shrink-0 overflow-hidden rounded-lg border-2 transition-all",

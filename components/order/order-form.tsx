@@ -261,6 +261,7 @@ export function OrderForm() {
             name="customer_description"
             render={({ field }) => (
               <FormItem>
+                <FormLabel>Requirements</FormLabel>
                 <FormControl>
                   <Textarea
                     rows={5}
