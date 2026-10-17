@@ -1,6 +1,7 @@
 import { createClient } from "jsr:@supabase/supabase-js@2"
 import { corsHeaders, handleOptions } from "../_shared/cors.ts"
 import { verifyTurnstile } from "../_shared/turnstile.ts"
+import { checkRateLimit } from "../_shared/rate-limit.ts"
 
 interface TrackOrderBody {
   order_number: string
@@ -48,6 +49,25 @@ Deno.serve(async (req) => {
   }
 
   const clientIp = req.headers.get("cf-connecting-ip") ?? req.headers.get("x-forwarded-for")
+
+  const supabase = createClient(
+    Deno.env.get("SUPABASE_URL")!,
+    Deno.env.get("SUPABASE_SERVICE_ROLE_KEY")!
+  )
+
+  // Two buckets: per-IP (stop one source from flooding) and per-order-number
+  // (stop distributed guessing of the phone half against a single order).
+  const [ipOk, orderOk] = await Promise.all([
+    checkRateLimit(supabase, `track-order:ip:${clientIp ?? "unknown"}`, 10, 600),
+    checkRateLimit(supabase, `track-order:order:${body.order_number.trim().toUpperCase()}`, 10, 600),
+  ])
+  if (!ipOk || !orderOk) {
+    return new Response(
+      JSON.stringify({ error: "Too many requests. Please wait a few minutes and try again." }),
+      { status: 429, headers: { ...corsHeaders, "Content-Type": "application/json" } }
+    )
+  }
+
   const turnstileOk = await verifyTurnstile(body.turnstile_token, clientIp)
   if (!turnstileOk) {
     return new Response(
@@ -55,11 +75,6 @@ Deno.serve(async (req) => {
       { status: 403, headers: { ...corsHeaders, "Content-Type": "application/json" } }
     )
   }
-
-  const supabase = createClient(
-    Deno.env.get("SUPABASE_URL")!,
-    Deno.env.get("SUPABASE_SERVICE_ROLE_KEY")!
-  )
 
   const { data, error } = await supabase.rpc("track_order_request", {
     p_order_number: body.order_number,

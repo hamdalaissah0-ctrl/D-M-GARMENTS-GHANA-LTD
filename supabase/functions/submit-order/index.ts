@@ -8,6 +8,7 @@ import { createClient } from "jsr:@supabase/supabase-js@2"
 import { corsHeaders, handleOptions } from "../_shared/cors.ts"
 import { createNotificationProvider } from "../_shared/notifications.ts"
 import { verifyTurnstile } from "../_shared/turnstile.ts"
+import { checkRateLimit } from "../_shared/rate-limit.ts"
 
 interface OrderItemInput {
   product_id?: string
@@ -125,6 +126,20 @@ Deno.serve(async (req) => {
   }
 
   const clientIp = req.headers.get("cf-connecting-ip") ?? req.headers.get("x-forwarded-for")
+
+  const supabase = createClient(
+    Deno.env.get("SUPABASE_URL")!,
+    Deno.env.get("SUPABASE_SERVICE_ROLE_KEY")!
+  )
+
+  const rateLimitOk = await checkRateLimit(supabase, `submit-order:${clientIp ?? "unknown"}`, 5, 600)
+  if (!rateLimitOk) {
+    return new Response(
+      JSON.stringify({ error: "Too many requests. Please wait a few minutes and try again." }),
+      { status: 429, headers: { ...corsHeaders, "Content-Type": "application/json" } }
+    )
+  }
+
   const turnstileOk = await verifyTurnstile(body.turnstile_token, clientIp)
   if (!turnstileOk) {
     return new Response(
@@ -132,11 +147,6 @@ Deno.serve(async (req) => {
       { status: 403, headers: { ...corsHeaders, "Content-Type": "application/json" } }
     )
   }
-
-  const supabase = createClient(
-    Deno.env.get("SUPABASE_URL")!,
-    Deno.env.get("SUPABASE_SERVICE_ROLE_KEY")!
-  )
 
   const { data, error } = await supabase.rpc("submit_order_request", {
     p_idempotency_key: body.idempotency_key,

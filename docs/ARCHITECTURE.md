@@ -42,7 +42,7 @@ Single growing file of read queries (`getCompanyProfile`, `getPublishedCategorie
 
 ## Edge Functions (`supabase/functions/`)
 
-`submit-order`, `submit-contact`, `track-order`, shared `_shared/cors.ts`, `_shared/turnstile.ts` (server-side Turnstile `siteverify`), and `_shared/notifications.ts` (NotificationProvider interface; only `ArkeselSmsProvider` is real — WhatsApp/email providers in that file are stubs, hence the lint warnings on unused params). All three public-facing functions require a valid Turnstile token.
+`submit-order`, `submit-contact`, `track-order`, shared `_shared/cors.ts`, `_shared/turnstile.ts` (server-side Turnstile `siteverify`), `_shared/rate-limit.ts` (Postgres-backed fixed-window limiter), and `_shared/notifications.ts` (NotificationProvider interface; only `ArkeselSmsProvider` is real — WhatsApp/email providers in that file are stubs, hence the lint warnings on unused params). All three public-facing functions check the rate limit first (cheapest), then require a valid Turnstile token.
 
 ## Known structural gaps vs. the new phase plan
 

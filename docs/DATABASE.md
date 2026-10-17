@@ -13,6 +13,7 @@ Live Supabase project: `otscslkmvhunzlxfrqse`. All schema changes go through `su
 7. `20261015223122_category_galleries_and_sizes.sql` — `category_images` table (Jiji-style sample galleries) + `categories.available_sizes text[]` (default `['S','M','L','XL','XXL','XXXL']`).
 8. `20261016120000_contact_notifications.sql` — adds `notification_events.contact_submission_id` (nullable FK to `contact_submissions`) and updates `submit_contact_request()` to also queue a staff SMS notification, same pattern as orders.
 9. `20261016130000_order_tracking.sql` — `track_order_request(p_order_number, p_phone)` security-definer RPC for the public `/track` page; matches by order number + last-9-digits phone, returns only customer-safe fields (no internal notes, no staff names), returns nothing on a mismatch rather than raising (no enumeration oracle).
+10. `20261017090000_rate_limiting.sql` — `rate_limit_events` table + `check_rate_limit(bucket_key, max_requests, window_seconds)` security-definer RPC: fixed-window counter, deletes expired rows on each call (fine at this traffic scale), used by all 3 public Edge Functions before any expensive work (Turnstile verification, SMS dispatch).
 
 ## Identifiers
 
