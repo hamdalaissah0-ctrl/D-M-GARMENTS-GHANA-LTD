@@ -47,3 +47,13 @@
 **Decision (2026-10-17):** Skip Groq AI integration for now.
 **Reason:** No use case was ever defined anywhere in the spec or docs — only "planned, not yet wired in." User was asked directly what the feature should do (customer chat assistant? staff order-summary drafting? something else?) and chose to skip rather than pick one speculatively. Building against an undefined use case would be invented scope, against the "no fake complexity" rule.
 **Implication:** `GROQ_API_KEY` stays blank in `.env.example`/`.env.local`. Revisit only if the user brings a concrete use case; when they do, get the API key from the user (requires their own console.groq.com account) before wiring anything in.
+
+## ADR-010
+**Decision (2026-10-17):** Playwright E2E tests run against the production build (`next build && next start`) via `playwright.config.ts`'s `webServer`, not `next dev`.
+**Reason:** Found during setup — Turbopack's dev-mode on-demand compilation makes the first request to an uncompiled dynamic route (e.g. `/products/[category]`) take 10-20s, which read as flaky `Link` navigation failures (`page.url()` unchanged after a click) that don't reflect how the deployed app actually behaves. Testing against the real build is both more representative and avoids the whole class of cold-compile flakiness.
+**Implication:** `npm run test:e2e` takes longer per run (full build first) but results are trustworthy and match production. Scope is intentionally limited to what's testable without a separate Turnstile test-key environment — see `IMPLEMENTATION-STATUS.md` Phase 19 for exactly what is and isn't covered.
+
+## ADR-011
+**Decision (2026-10-17):** Added `htmlFor`/`id` pairs to the `<Label>`/`<Input>` combinations in `quick-order-form.tsx` and `track-order-form.tsx`.
+**Reason:** Found while writing E2E tests — Playwright's `getByLabel()` (which mirrors how screen readers and the browser's own accessible-name computation work) couldn't find these inputs because the labels were visually adjacent but not programmatically associated. This was a real accessibility bug on two of the three public-facing forms, not a test artifact — fixing it properly was more correct than writing a weaker test selector around it.
+**Implication:** `contact-form.tsx` and `order-form.tsx` already use the shadcn `Form`/`FormLabel`/`FormControl` pattern, which handles this association automatically via react-hook-form — no change needed there. Any new form should prefer that pattern, or explicit `htmlFor`/`id` if using plain `Label`/`Input`.

@@ -76,8 +76,9 @@ export function TrackOrderForm() {
         <CardContent className="space-y-4 p-5">
           <div className="grid gap-4 sm:grid-cols-2">
             <div>
-              <Label>Order number</Label>
+              <Label htmlFor="track-order-number">Order number</Label>
               <Input
+                id="track-order-number"
                 className="mt-1.5"
                 placeholder="DM-2026-000123"
                 value={orderNumber}
@@ -85,8 +86,9 @@ export function TrackOrderForm() {
               />
             </div>
             <div>
-              <Label>Phone number</Label>
+              <Label htmlFor="track-phone">Phone number</Label>
               <Input
+                id="track-phone"
                 className="mt-1.5"
                 type="tel"
                 placeholder="The number you submitted with"

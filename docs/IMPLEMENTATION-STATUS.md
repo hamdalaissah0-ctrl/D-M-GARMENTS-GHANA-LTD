@@ -1,6 +1,6 @@
 # D&M Garments — Implementation Status
 
-Last updated: 2026-10-16
+Last updated: 2026-10-17
 
 ## Phase tracker
 
@@ -25,7 +25,7 @@ Last updated: 2026-10-16
 | 16 SEO | PASS — `sitemap.ts`/`robots.ts` already existed (prior audit entry was stale); added `metadataBase`, sitewide OpenGraph/Twitter defaults, real favicon/apple-icon (replacing the default Next.js starter icon), Organization JSON-LD on the homepage, FAQPage JSON-LD on `/faq`, and the 3 missing routes (`/track`, `/privacy`, `/terms`) to the sitemap. Removed unused default Next.js starter SVGs from `public/`. Verified via live DOM inspection 2026-10-17 |
 | 17 Analytics | PASS (code) / ACTION NEEDED (dashboard) — `@vercel/analytics` wired into the root layout (automatic pageviews) plus custom events: `order_submitted` (both order forms), `contact_submitted`, `phone_clicked`/`whatsapp_clicked` (quick-order form). Verified firing correctly in dev console 2026-10-17. User must toggle "Web Analytics" on for the project in the Vercel dashboard (Project → Analytics tab) for events to actually be collected in production — the code works regardless, but nothing is retained until that's enabled. Sentry still NOT STARTED |
 | 18 Performance | NOT AUDITED |
-| 19 Testing | MISSING — zero automated tests |
+| 19 Testing | PASS (scoped) — Playwright E2E suite (`e2e/`, 15 tests × 2 projects), covering what's honestly testable without a Turnstile test-key environment: page rendering, navigation (desktop + mobile menu), catalogue browsing, admin-auth redirect, 404, JSON-LD/favicon correctness, and form-disabled-until-verified gating. Does **not** cover actual order/contact/track *submission* (Turnstile blocks automated browsers by design — the same protection verified manually in Phases 9/11/12/15). Runs against the production build (`next build && next start`), not dev mode, after discovering Turbopack's on-demand dev compilation causes flaky navigation timing. Found and fixed a real accessibility bug along the way: `quick-order-form.tsx` and `track-order-form.tsx` had `<Label>` elements not programmatically associated with their `<Input>`s (no `htmlFor`/`id`) |
 | 20 Production | PARTIAL — deployed and live on Vercel; launch checklist (Turnstile, monitoring, Lighthouse, a11y scan) not run |
 
 ## KEEP / REFACTOR / REPLACE / REMOVE / MISSING classification
@@ -44,7 +44,8 @@ Last updated: 2026-10-16
 - Admin Messages inbox (`/admin/messages`) and order-detail notification-delivery visibility — closes the gap where contact-form submissions were stored but never surfaced to staff or alerted by SMS; verified end-to-end 2026-10-16
 - Public order tracking (`/track`) — `track_order_request()` RPC verified directly (correct pair returns data, wrong phone returns nothing); linked from the footer and both order-success confirmations; 2026-10-16
 - SEO: metadataBase, sitewide OG/Twitter defaults, real favicon/apple-icon, homepage Organization JSON-LD, FAQ page FAQPage JSON-LD, complete sitemap — verified via live DOM inspection 2026-10-17
-- Analytics: `@vercel/analytics` with pageviews + `order_submitted`/`contact_submitted`/`phone_clicked`/`whatsapp_clicked` custom events, verified firing in dev console 2026-10-17. Needs the Vercel dashboard toggle (see Phase 17 row) to actually collect data in production
+- Analytics: `@vercel/analytics` with pageviews + `order_submitted`/`contact_submitted`/`phone_clicked`/`whatsapp_clicked` custom events, verified firing in dev console 2026-10-17. User has enabled the Vercel dashboard "Web Analytics" toggle (2026-10-17)
+- Playwright E2E suite (`e2e/`) covering rendering/navigation/catalogue/auth-guard/404/JSON-LD/form-gating — 28 passing, 2 skipped (project-specific). Runs against the production build. See Phase 19 row for scope boundary (no Turnstile-gated submission coverage)
 
 ### REFACTOR (works, but should be tightened if touched again)
 - `lib/supabase/queries.ts` — single growing file; fine at current size, split by domain if it keeps growing
@@ -58,10 +59,9 @@ Last updated: 2026-10-16
 
 ### MISSING (named by the new spec, not yet built — prioritize per user request, not automatically)
 - Groq AI integration — user asked directly 2026-10-17, chose to skip: no use case was ever defined (spec only said "planned"), and building a feature with no defined behavior would be invented scope. Revisit only if the user brings a concrete use case.
-- Sentry error monitoring, Vercel Analytics events
-- SEO metadata factory, sitemap/robots/JSON-LD audit
-- Automated tests (lint/typecheck/build already run each session; no Playwright/unit tests exist)
+- Sentry error monitoring — needs its own account, same category as the Turnstile/Vercel Analytics setup already done
 - Rate limiting on public mutation endpoints
+- Lighthouse/performance audit (Phase 18, not started)
 
 ## Governing rule going forward
 

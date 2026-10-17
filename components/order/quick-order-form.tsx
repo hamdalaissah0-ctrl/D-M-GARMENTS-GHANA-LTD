@@ -192,12 +192,13 @@ export function QuickOrderForm({
       {/* Contact details */}
       <div className="grid gap-3 sm:grid-cols-2">
         <div>
-          <Label>Your name</Label>
-          <Input className="mt-1.5" value={fullName} onChange={(e) => setFullName(e.target.value)} />
+          <Label htmlFor="quick-order-full-name">Your name</Label>
+          <Input id="quick-order-full-name" className="mt-1.5" value={fullName} onChange={(e) => setFullName(e.target.value)} />
         </div>
         <div>
-          <Label>Phone number</Label>
+          <Label htmlFor="quick-order-phone">Phone number</Label>
           <Input
+            id="quick-order-phone"
             className="mt-1.5"
             type="tel"
             value={phone}
