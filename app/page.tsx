@@ -1,4 +1,5 @@
 import Link from "next/link"
+import Image from "next/image"
 import { Button } from "@/components/ui/button"
 import { Card, CardContent } from "@/components/ui/card"
 import { SiteHeader } from "@/components/layout/site-header"
@@ -102,11 +103,12 @@ export default async function HomePage() {
                   className="group relative aspect-square w-64 shrink-0 overflow-hidden rounded-2xl border border-border shadow-sm transition-shadow hover:shadow-lg"
                 >
                   {category.image_url ? (
-                    // eslint-disable-next-line @next/next/no-img-element
-                    <img
+                    <Image
                       src={category.image_url}
                       alt={category.name}
-                      className="absolute inset-0 size-full object-cover transition-transform duration-300 group-hover:scale-105"
+                      fill
+                      sizes="256px"
+                      className="object-cover transition-transform duration-300 group-hover:scale-105"
                     />
                   ) : (
                     <div className="absolute inset-0 bg-secondary" />

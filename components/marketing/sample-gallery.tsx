@@ -1,6 +1,7 @@
 "use client"
 
 import { useState } from "react"
+import Image from "next/image"
 import { cn } from "cn"
 
 export function SampleGallery({
@@ -18,13 +19,15 @@ export function SampleGallery({
     <div>
       <div className="relative aspect-square w-full overflow-hidden rounded-2xl border border-border bg-secondary/30">
         {images.map((img, i) => (
-          // eslint-disable-next-line @next/next/no-img-element
-          <img
+          <Image
             key={img.storage_path}
             src={img.storage_path}
             alt={img.alt_text ?? `${alt} sample ${i + 1}`}
+            fill
+            sizes="(min-width: 1024px) 50vw, 100vw"
+            priority={i === 0}
             className={cn(
-              "absolute inset-0 size-full object-cover transition-opacity duration-500 ease-out",
+              "object-cover transition-opacity duration-500 ease-out",
               i === active ? "opacity-100" : "opacity-0"
             )}
           />
@@ -43,10 +46,11 @@ export function SampleGallery({
                 i === active ? "border-primary" : "border-transparent opacity-70 hover:opacity-100"
               )}
             >
-              {/* eslint-disable-next-line @next/next/no-img-element */}
-              <img
+              <Image
                 src={img.storage_path}
                 alt=""
+                width={64}
+                height={64}
                 className="size-full object-cover"
               />
             </button>

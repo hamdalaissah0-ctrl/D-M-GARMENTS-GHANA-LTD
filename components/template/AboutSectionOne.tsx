@@ -1,4 +1,5 @@
 // Ported from NextJSTemplates/startup-nextjs (MIT License), real D&M content.
+import Image from "next/image"
 import { Check } from "lucide-react"
 import SectionTitle from "./SectionTitle"
 
@@ -42,12 +43,13 @@ export default function AboutSectionOne() {
               </div>
             </div>
 
-            <div className="w-full px-4 lg:w-1/2">
-              {/* eslint-disable-next-line @next/next/no-img-element */}
-              <img
+            <div className="relative mx-auto aspect-[4/5] w-full max-w-[500px] px-4 lg:mr-0 lg:w-1/2">
+              <Image
                 src={`${MEDIA_BASE}/products/school-uniform-navy.png`}
                 alt="D&M Garments — school uniform, manufactured in-house"
-                className="shadow-three mx-auto aspect-[4/5] max-w-[500px] rounded-lg object-cover lg:mr-0"
+                fill
+                sizes="(min-width: 1024px) 500px, 100vw"
+                className="shadow-three rounded-lg object-cover"
               />
             </div>
           </div>

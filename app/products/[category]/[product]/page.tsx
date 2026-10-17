@@ -1,6 +1,7 @@
 import type { Metadata } from "next"
 import { notFound } from "next/navigation"
 import Link from "next/link"
+import Image from "next/image"
 import { Button } from "@/components/ui/button"
 import { SiteHeader } from "@/components/layout/site-header"
 import { SiteFooter } from "@/components/layout/site-footer"
@@ -75,15 +76,17 @@ export default async function ProductPage({
               />
             ) : (
               <div className="grid grid-cols-2 gap-3">
-                {images.map((img) => (
-                  // Storage URLs are resolved via the admin CMS upload pipeline.
-                  // eslint-disable-next-line @next/next/no-img-element
-                  <img
-                    key={img.id}
-                    src={img.storage_path}
-                    alt={img.alt_text ?? product.name}
-                    className="aspect-square w-full rounded-lg object-cover"
-                  />
+                {images.map((img, i) => (
+                  <div key={img.id} className="relative aspect-square w-full overflow-hidden rounded-lg">
+                    <Image
+                      src={img.storage_path}
+                      alt={img.alt_text ?? product.name}
+                      fill
+                      sizes="(min-width: 1024px) 25vw, 50vw"
+                      priority={i === 0}
+                      className="object-cover"
+                    />
+                  </div>
                 ))}
               </div>
             )}
