@@ -17,7 +17,7 @@ Last updated: 2026-10-16
 | 08 Database | PASS — 7 migrations applied, live schema matches app |
 | 09 Quotation/Order Backend | PASS — idempotent submission, audit trail, RLS, server-verified Turnstile on all 3 public forms (2026-10-16) |
 | 10 File Storage | PASS — private order-files bucket + public media bucket, correctly separated |
-| 11 Notifications | PASS — SMS (Arkesel) live for both orders and contact messages; `notification_events` table tracks per-channel delivery status (channel/recipient/status/attempts/error), surfaced in the admin order detail page (2026-10-16). WhatsApp still manual-link only, email still stubbed — acceptable per MISSING list, not required for PASS |
+| 11 Notifications | PASS — SMS (Arkesel) live for both orders and contact messages; `notification_events` table tracks per-channel delivery status (channel/recipient/status/attempts/error), surfaced in the admin order detail page (2026-10-16). WhatsApp is permanently manual-link by decision (ADR-008), email still stubbed — neither blocks PASS |
 | 12 Customer Request Tracking | PASS — public `/track` page, Turnstile-gated `track_order_request()` RPC matches by order number + last-9-digits phone, returns only customer-safe fields (no internal notes/staff names), never confirms/denies which part of a wrong pair was incorrect (2026-10-16) |
 | 13 Admin System | PASS — orders/messages/customers/categories/products/quotes/settings/staff all live |
 | 14 CMS | PASS — Testimonials/FAQs/Portfolio admin shipped and verified 2026-10-16 |
@@ -49,13 +49,12 @@ Last updated: 2026-10-16
 - `supabase/functions/_shared/notifications.ts` — email/WhatsApp provider stubs have unused-param lint warnings; either implement or prefix params with `_` intentionally (already done) and leave until a real provider is wired
 
 ### REPLACE (not currently planned — only if user asks)
-- Nothing identified. The Jiji-style single-item order flow is an intentional product decision (ADR-004), not a placeholder awaiting replacement.
+- Nothing identified. The Jiji-style single-item order flow (ADR-004) and manual `wa.me` WhatsApp links (ADR-008) are both intentional product decisions, not placeholders awaiting replacement.
 
 ### REMOVE
 - Nothing identified as dead code in this audit pass.
 
 ### MISSING (named by the new spec, not yet built — prioritize per user request, not automatically)
-- WhatsApp Cloud API (currently manual `wa.me` links only)
 - Groq AI integration (env var present, nothing calls it)
 - Sentry error monitoring, Vercel Analytics events
 - SEO metadata factory, sitemap/robots/JSON-LD audit
