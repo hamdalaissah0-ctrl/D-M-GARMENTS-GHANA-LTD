@@ -1,0 +1,39 @@
+name: Weekly data backup
+
+# Free-tier Supabase doesn't guarantee long-term backup retention. Schema is
+# already version-controlled via supabase/migrations/*.sql; this captures
+# row data as JSON into the repo weekly so there's always an off-platform
+# copy to restore from. See docs/DECISIONS.md.
+
+on:
+  schedule:
+    - cron: "0 3 * * 0" # Every Sunday at 03:00 UTC
+  workflow_dispatch: {} # Allows running it manually from the Actions tab
+
+permissions:
+  contents: write
+
+jobs:
+  backup:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+
+      - name: Run backup
+        env:
+          SUPABASE_URL: ${{ secrets.SUPABASE_URL }}
+          SUPABASE_SERVICE_ROLE_KEY: ${{ secrets.SUPABASE_SERVICE_ROLE_KEY }}
+        run: node scripts/backup-data.mjs
+
+      - name: Commit backup
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "github-actions[bot]@users.noreply.github.com"
+          git add backups/
+          git diff --cached --quiet && echo "No changes to commit" && exit 0
+          git commit -m "chore: weekly data backup $(date -u +%Y-%m-%d)"
+          git push

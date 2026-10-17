@@ -81,6 +81,11 @@ export function SiteFooter({ company }: { company: CompanyProfile | null }) {
                   Terms of Use
                 </Link>
               </li>
+              <li>
+                <Link href="/auth/login" className="hover:text-white">
+                  Staff Login
+                </Link>
+              </li>
             </ul>
           </div>
         </div>

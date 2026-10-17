@@ -12,3 +12,4 @@
 | Vercel Analytics | LIVE | `@vercel/analytics` in `app/layout.tsx`; custom events `order_submitted`, `contact_submitted`, `phone_clicked`, `whatsapp_clicked`. Verified firing in dev console 2026-10-17; user has enabled "Web Analytics" in the Vercel dashboard |
 | GitHub | LIVE | `hamdalaissah0-ctrl/D-M-GARMENTS-GHANA-LTD`, pushed via Terminal panel (gh/git credential isolation — see DECISIONS.md) |
 | Vercel | LIVE | Auto-deploys from `main` via pre-existing GitHub integration. Function region pinned to `lhr1` (London) via `vercel.json` to match Supabase's `eu-west-2`, confirmed live (ADR-016) — on the existing Hobby plan, no upgrade needed |
+| GitHub Actions (weekly backup) | CODE COMPLETE, NOT YET ACTIVE | `.github/workflows/backup.yml` + `scripts/backup-data.mjs` — user action needed: add `SUPABASE_URL`/`SUPABASE_SERVICE_ROLE_KEY` as repo secrets (blocked for this session, see ADR-021), then trigger once manually to confirm |

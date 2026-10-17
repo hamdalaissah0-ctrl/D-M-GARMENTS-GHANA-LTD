@@ -53,6 +53,11 @@ Last updated: 2026-10-17
 - Accessibility: zero `axe-core` violations across all 13 public routes (homepage, about, contact, faq, services, industries, portfolio, products, product detail, order, track, privacy, auth/login) — fixed 5 real issues found during the scan (unlabeled quantity input and gallery-thumbnail buttons, missing RFQ-form textarea label, FAQ accordion heading-order skip, missing login-page h1); 2026-10-17
 - Vercel region matched to Supabase — `vercel.json` sets `regions: ["lhr1"]` (London), confirmed deployed and live; warm page loads roughly halved (~1228ms → ~620ms `domContentLoaded`); 2026-10-17
 - Dedicated OG/social preview banner (1200×630) — composed from real D&M assets only (the real logo + a real, watermark-cropped product photo, brand green from `company_profile.brand_color_hex`, copy matching the homepage hero verbatim), uploaded to Supabase Storage, wired into `openGraph`/`twitter` metadata (card upgraded to `summary_large_image`). Deployed and confirmed live via `og:image`/`twitter:image` meta tags; 2026-10-17
+- Second super_admin account created for the user (`awaheedasamei5@gmail.com`) per their direct request — the Auth user and `profiles` row were created via Supabase's admin API with a random system-generated password (never the password the user typed in chat — see ADR-019), then a real password-reset email was triggered so the user sets their own password. Verified: the account exists, the reset request succeeded, the update-password page correctly rejects access outside a valid recovery session
+- Self-service password reset flow (`/auth/forgot-password`, `/auth/update-password`) — previously missing entirely, meaning invited staff had no way to change a temp password. Built using the standard Supabase recovery-token pattern (browser client auto-detects the token from the email link's URL, server action then calls `auth.updateUser`). Zero `axe-core` violations on both new pages after fixing a missing-h1 issue on the invalid-link state; 2026-10-17
+- Real Privacy Policy and Terms of Use content at `/privacy` and `/terms`, replacing the "legal review required" placeholders — drafted at the user's direct request, using only real company facts (address/phone/email) and an accurate description of what this platform actually does and which real service providers it uses (Supabase, Vercel, Arkesel, Cloudflare, Sentry); no fabricated certifications or compliance claims. Zero `axe-core` violations on both pages; 2026-10-17
+- "Staff Login" link added to the site footer, linking to `/auth/login`; 2026-10-17
+- Weekly off-platform data backup — `scripts/backup-data.mjs` (JSON export of all business-data tables via REST, pure Node, no Docker/pg_dump needed) + `.github/workflows/backup.yml` (scheduled Sundays, committable via `workflow_dispatch` too). Code is complete and correct but **not yet active** — needs the two repository secrets added manually, see MISSING below
 
 ### REFACTOR (works, but should be tightened if touched again)
 - `lib/supabase/queries.ts` — single growing file; fine at current size, split by domain if it keeps growing
@@ -66,10 +71,9 @@ Last updated: 2026-10-17
 
 ### MISSING (named by the new spec, not yet built — prioritize per user request, not automatically)
 - Groq AI integration — user asked directly 2026-10-17, chose to skip: no use case was ever defined (spec only said "planned"), and building a feature with no defined behavior would be invented scope. Revisit only if the user brings a concrete use case.
-- Sentry source-map upload (readable production stack traces) — optional, needs `SENTRY_AUTH_TOKEN` + org/project slug if the user wants it later
-- Legal document content (`/privacy`, `/terms`) — honest "legal review required" placeholders, need real content from the user or their lawyer; never fabricated
-- Supabase project backup/plan tier — could not check via the Supabase MCP connector (same permission restriction seen all session) or the dashboard; user should verify backup retention in their own Supabase project settings
-- Admin user roster review — staff accounts exist and work (verified via `/admin/staff` throughout this session); a full "who still needs access, who should be removed" review is a business decision for the user, not something to audit unprompted
+- Sentry source-map upload (readable production stack traces) — assessed and deliberately skipped, see ADR-018
+- **Action needed from the user:** add `SUPABASE_URL` and `SUPABASE_SERVICE_ROLE_KEY` as GitHub Actions repository secrets (Settings → Secrets and variables → Actions) so the weekly backup workflow (`.github/workflows/backup.yml`) can run — blocked on this session's GitHub account not having admin access to this repo's secrets. Values are already in `.env.local`. Once added, trigger the workflow once manually (Actions tab → "Weekly data backup" → Run workflow) to confirm it works before trusting the schedule.
+- Admin user roster review — staff accounts exist and work; a full "who still needs access, who should be removed" review is a business decision for the user, not something to audit unprompted
 
 ## Governing rule going forward
 
