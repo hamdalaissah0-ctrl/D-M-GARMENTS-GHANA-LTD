@@ -35,6 +35,9 @@ Google Fonts via next/font — confirmed: Inter loaded via next/font/google in a
 ANALYTICS
 @vercel/analytics — pageviews + custom conversion events (order_submitted, contact_submitted, phone_clicked, whatsapp_clicked)
 
+ERROR MONITORING
+@sentry/nextjs — client/server/edge error capture (see ADR-013)
+
 TESTING
 @playwright/test — E2E suite in e2e/, runs against the production build (see ADR-010)
 ```

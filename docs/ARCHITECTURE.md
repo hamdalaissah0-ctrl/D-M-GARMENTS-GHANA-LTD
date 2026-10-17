@@ -13,6 +13,8 @@
 - `server-only` guards the service-role Supabase client from client bundles
 - Cloudflare Turnstile (hand-written `components/shared/turnstile-widget.tsx`, no third-party wrapper) — gates all 3 public mutation forms, real production keys live (ADR-007)
 - `@vercel/analytics` — pageviews + custom conversion events (ADR, see IMPLEMENTATION-STATUS.md Phase 17)
+- `@sentry/nextjs` — client/server/edge error capture, real production DSN (ADR-013)
+- `@playwright/test` — E2E suite, runs against the production build (ADR-010)
 
 ## Deliberately not adopted (named by the new spec, rejected with a reason — not oversights)
 
@@ -21,8 +23,7 @@
 - WhatsApp Cloud API — manual `wa.me` links are the permanent choice (ADR-008).
 - Groq AI — skipped pending a concrete use case (ADR-009).
 - Resend / transactional email — notifications are SMS-only (Arkesel) right now; email provider in `_shared/notifications.ts` is a stub.
-- Sentry — no error monitoring yet; needs its own account (same category as Turnstile/Vercel Analytics setup).
-- Playwright / any test runner — zero automated tests exist (Phase 19, not yet started).
+- Upstash/external rate-limiting service — Postgres-backed instead, no new account needed (ADR-012).
 
 ## Routing (`app/`)
 
