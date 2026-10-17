@@ -42,3 +42,8 @@
 **Decision (2026-10-16):** Stay on manual `wa.me` deep links for WhatsApp; do not adopt the WhatsApp Cloud API named in the new spec's approved stack.
 **Reason:** User was asked directly and chose to keep manual links. This reaffirms the original project decision ("let's look for a free API" for WhatsApp, made before the new spec existed) — the Cloud API requires a Meta Business Manager account, a verified business phone number, and has per-conversation costs beyond a limited free tier, none of which an agent can provision on the user's behalf.
 **Implication:** `components/order/quick-order-form.tsx` and the admin order workspace's `wa.me` links remain the permanent WhatsApp integration, not a placeholder awaiting replacement. Remove "WhatsApp Cloud API" from the MISSING list; it is a deliberately-rejected option, not an open gap.
+
+## ADR-009
+**Decision (2026-10-17):** Skip Groq AI integration for now.
+**Reason:** No use case was ever defined anywhere in the spec or docs — only "planned, not yet wired in." User was asked directly what the feature should do (customer chat assistant? staff order-summary drafting? something else?) and chose to skip rather than pick one speculatively. Building against an undefined use case would be invented scope, against the "no fake complexity" rule.
+**Implication:** `GROQ_API_KEY` stays blank in `.env.example`/`.env.local`. Revisit only if the user brings a concrete use case; when they do, get the API key from the user (requires their own console.groq.com account) before wiring anything in.

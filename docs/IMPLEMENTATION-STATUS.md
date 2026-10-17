@@ -55,7 +55,7 @@ Last updated: 2026-10-16
 - Nothing identified as dead code in this audit pass.
 
 ### MISSING (named by the new spec, not yet built — prioritize per user request, not automatically)
-- Groq AI integration (env var present, nothing calls it)
+- Groq AI integration — user asked directly 2026-10-17, chose to skip: no use case was ever defined (spec only said "planned"), and building a feature with no defined behavior would be invented scope. Revisit only if the user brings a concrete use case.
 - Sentry error monitoring, Vercel Analytics events
 - SEO metadata factory, sitemap/robots/JSON-LD audit
 - Automated tests (lint/typecheck/build already run each session; no Playwright/unit tests exist)
