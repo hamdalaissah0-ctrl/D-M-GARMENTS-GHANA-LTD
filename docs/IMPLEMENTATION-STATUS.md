@@ -22,7 +22,7 @@ Last updated: 2026-10-16
 | 13 Admin System | PASS — orders/messages/customers/categories/products/quotes/settings/staff all live |
 | 14 CMS | PASS — Testimonials/FAQs/Portfolio admin shipped and verified 2026-10-16 |
 | 15 Security | PASS — RLS, server-side validation, auth/authz, signed URLs, audit logs, Turnstile (real production keys, confirmed working by the user from a real browser 2026-10-16) all in place; MISSING: rate limiting, Sentry |
-| 16 SEO | MISSING — no metadata factory, sitemap/robots/JSON-LD audit done yet |
+| 16 SEO | PASS — `sitemap.ts`/`robots.ts` already existed (prior audit entry was stale); added `metadataBase`, sitewide OpenGraph/Twitter defaults, real favicon/apple-icon (replacing the default Next.js starter icon), Organization JSON-LD on the homepage, FAQPage JSON-LD on `/faq`, and the 3 missing routes (`/track`, `/privacy`, `/terms`) to the sitemap. Removed unused default Next.js starter SVGs from `public/`. Verified via live DOM inspection 2026-10-17 |
 | 17 Analytics | MISSING — no events instrumented |
 | 18 Performance | NOT AUDITED |
 | 19 Testing | MISSING — zero automated tests |
@@ -43,6 +43,7 @@ Last updated: 2026-10-16
 - Turnstile bot protection on `/order`, the quick-order form, and `/contact` — real production keys live on all environments, confirmed working by the user from a real browser 2026-10-16
 - Admin Messages inbox (`/admin/messages`) and order-detail notification-delivery visibility — closes the gap where contact-form submissions were stored but never surfaced to staff or alerted by SMS; verified end-to-end 2026-10-16
 - Public order tracking (`/track`) — `track_order_request()` RPC verified directly (correct pair returns data, wrong phone returns nothing); linked from the footer and both order-success confirmations; 2026-10-16
+- SEO: metadataBase, sitewide OG/Twitter defaults, real favicon/apple-icon, homepage Organization JSON-LD, FAQ page FAQPage JSON-LD, complete sitemap — verified via live DOM inspection 2026-10-17
 
 ### REFACTOR (works, but should be tightened if touched again)
 - `lib/supabase/queries.ts` — single growing file; fine at current size, split by domain if it keeps growing
@@ -52,7 +53,7 @@ Last updated: 2026-10-16
 - Nothing identified. The Jiji-style single-item order flow (ADR-004) and manual `wa.me` WhatsApp links (ADR-008) are both intentional product decisions, not placeholders awaiting replacement.
 
 ### REMOVE
-- Nothing identified as dead code in this audit pass.
+- Default Next.js starter assets (`public/file.svg`, `globe.svg`, `next.svg`, `vercel.svg`, `window.svg`, default `app/favicon.ico`) — confirmed unreferenced anywhere in the codebase, removed 2026-10-17 and replaced with the real D&M logo as `app/icon.png`/`app/apple-icon.png`.
 
 ### MISSING (named by the new spec, not yet built — prioritize per user request, not automatically)
 - Groq AI integration — user asked directly 2026-10-17, chose to skip: no use case was ever defined (spec only said "planned"), and building a feature with no defined behavior would be invented scope. Revisit only if the user brings a concrete use case.

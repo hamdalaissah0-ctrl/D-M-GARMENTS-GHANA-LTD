@@ -9,13 +9,33 @@ const inter = Inter({
   subsets: ["latin"],
 })
 
+const SITE_URL = process.env.NEXT_PUBLIC_SITE_URL ?? "http://localhost:3000"
+const SITE_NAME = "D&M Garments Ghana Limited"
+const SITE_DESCRIPTION =
+  "D&M Garments Ghana Limited manufactures hospitality, corporate, workwear and PPE uniforms with embroidery, DTF printing and branding — no minimum order quantity."
+const OG_LOGO = "https://otscslkmvhunzlxfrqse.supabase.co/storage/v1/object/public/media/branding/dm-logo.png"
+
 export const metadata: Metadata = {
+  metadataBase: new URL(SITE_URL),
   title: {
-    default: "D&M Garments Ghana Limited — Uniform & Garment Manufacturing",
-    template: "%s | D&M Garments Ghana Limited",
+    default: `${SITE_NAME} — Uniform & Garment Manufacturing`,
+    template: `%s | ${SITE_NAME}`,
   },
-  description:
-    "D&M Garments Ghana Limited manufactures hospitality, corporate, workwear and PPE uniforms with embroidery, DTF printing and branding — no minimum order quantity.",
+  description: SITE_DESCRIPTION,
+  openGraph: {
+    type: "website",
+    siteName: SITE_NAME,
+    title: `${SITE_NAME} — Uniform & Garment Manufacturing`,
+    description: SITE_DESCRIPTION,
+    url: SITE_URL,
+    images: [{ url: OG_LOGO }],
+  },
+  twitter: {
+    card: "summary",
+    title: `${SITE_NAME} — Uniform & Garment Manufacturing`,
+    description: SITE_DESCRIPTION,
+    images: [OG_LOGO],
+  },
 }
 
 export default function RootLayout({ children }: { children: ReactNode }) {

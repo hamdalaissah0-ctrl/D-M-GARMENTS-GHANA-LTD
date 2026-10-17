@@ -17,8 +17,27 @@ export const metadata: Metadata = {
 export default async function FaqPage() {
   const [company, faqs] = await Promise.all([getCompanyProfile(), getPublishedFaqs()])
 
+  const faqJsonLd =
+    faqs.length > 0
+      ? {
+          "@context": "https://schema.org",
+          "@type": "FAQPage",
+          mainEntity: faqs.map((faq) => ({
+            "@type": "Question",
+            name: faq.question,
+            acceptedAnswer: { "@type": "Answer", text: faq.answer },
+          })),
+        }
+      : null
+
   return (
     <PageShell company={company} title="Frequently Asked Questions">
+      {faqJsonLd && (
+        <script
+          type="application/ld+json"
+          dangerouslySetInnerHTML={{ __html: JSON.stringify(faqJsonLd) }}
+        />
+      )}
       {faqs.length === 0 ? (
         <ContentRequired
           title="No FAQs published yet"

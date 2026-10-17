@@ -40,8 +40,24 @@ export default async function HomePage() {
     getPublishedCategories(),
   ])
 
+  const siteUrl = process.env.NEXT_PUBLIC_SITE_URL ?? "http://localhost:3000"
+  const organizationJsonLd = {
+    "@context": "https://schema.org",
+    "@type": "Organization",
+    name: company?.company_name ?? "D&M Garments Ghana Limited",
+    url: siteUrl,
+    logo: "https://otscslkmvhunzlxfrqse.supabase.co/storage/v1/object/public/media/branding/dm-logo.png",
+    ...(company?.address ? { address: { "@type": "PostalAddress", streetAddress: company.address } } : {}),
+    ...(company?.phone_primary ? { telephone: company.phone_primary } : {}),
+    ...(company?.email ? { email: company.email } : {}),
+  }
+
   return (
     <>
+      <script
+        type="application/ld+json"
+        dangerouslySetInnerHTML={{ __html: JSON.stringify(organizationJsonLd) }}
+      />
       <SiteHeader />
       <main className="flex-1">
         <Hero company={company} />
