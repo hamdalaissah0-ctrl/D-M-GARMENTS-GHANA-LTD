@@ -11,4 +11,4 @@
 | Sentry | LIVE (production DSN) | `@sentry/nextjs` (client/server/edge + `global-error.tsx`). Real DSN from user's own Sentry account, set as Vercel production env var only (blank in local dev on purpose). Verified end-to-end: a deliberately-triggered production error appeared in the Sentry dashboard within a minute (2026-10-17). Source-map upload not yet configured — optional, needs `SENTRY_AUTH_TOKEN` |
 | Vercel Analytics | LIVE | `@vercel/analytics` in `app/layout.tsx`; custom events `order_submitted`, `contact_submitted`, `phone_clicked`, `whatsapp_clicked`. Verified firing in dev console 2026-10-17; user has enabled "Web Analytics" in the Vercel dashboard |
 | GitHub | LIVE | `hamdalaissah0-ctrl/D-M-GARMENTS-GHANA-LTD`, pushed via Terminal panel (gh/git credential isolation — see DECISIONS.md) |
-| Vercel | LIVE | Auto-deploys from `main` via pre-existing GitHub integration |
+| Vercel | LIVE | Auto-deploys from `main` via pre-existing GitHub integration. Function region pinned to `lhr1` (London) via `vercel.json` to match Supabase's `eu-west-2`, confirmed live (ADR-016) — on the existing Hobby plan, no upgrade needed |
