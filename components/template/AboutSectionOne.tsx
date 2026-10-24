@@ -45,8 +45,8 @@ export default function AboutSectionOne() {
 
             <div className="relative mx-auto aspect-[4/5] w-full max-w-[500px] px-4 lg:mr-0 lg:w-1/2">
               <Image
-                src={`${MEDIA_BASE}/products/school-uniform-navy.png`}
-                alt="D&M Garments — school uniform, manufactured in-house"
+                src={`${MEDIA_BASE}/products/dtf-printing-staff.webp`}
+                alt="D&M Garments staff member at the DTF printer, working on branded fabric"
                 fill
                 sizes="(min-width: 1024px) 500px, 100vw"
                 className="shadow-three rounded-lg object-cover"

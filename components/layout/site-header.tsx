@@ -1,6 +1,6 @@
 "use client"
 
-import { useEffect, useState } from "react"
+import { useEffect, useState, type MouseEvent } from "react"
 import Link from "next/link"
 import { usePathname } from "next/navigation"
 import { Menu, X, Home, Shirt, Images, Info, Mail, Phone } from "lucide-react"
@@ -25,10 +25,17 @@ export function SiteHeader({ phone }: { phone?: string | null } = {}) {
     }
   }, [navbarOpen])
 
+  function handleHomeClick(e: MouseEvent) {
+    if (pathname === "/") {
+      e.preventDefault()
+      window.scrollTo({ top: 0, behavior: "smooth" })
+    }
+  }
+
   return (
     <header className="sticky top-0 z-40 w-full px-3 pt-3 sm:px-4">
       <div className="mx-auto flex max-w-6xl items-center justify-between gap-2 rounded-full border border-border/70 bg-white/95 py-1.5 pr-1.5 pl-3 shadow-sm backdrop-blur-sm sm:pl-4">
-        <Link href="/" className="flex shrink-0 items-center gap-2">
+        <Link href="/" onClick={handleHomeClick} className="flex shrink-0 items-center gap-2">
           <LogoMark className="size-8" />
           <span className="hidden text-sm font-semibold tracking-tight text-foreground sm:inline">
             D&amp;M <span className="text-primary">Garments</span>
@@ -42,6 +49,7 @@ export function SiteHeader({ phone }: { phone?: string | null } = {}) {
               <Link
                 key={link.href}
                 href={link.href}
+                onClick={link.href === "/" ? handleHomeClick : undefined}
                 className={`flex items-center gap-1.5 rounded-full px-3.5 py-2 text-sm font-medium transition-colors ${
                   active ? "bg-accent text-primary" : "text-muted-foreground hover:text-foreground"
                 }`}
@@ -88,7 +96,10 @@ export function SiteHeader({ phone }: { phone?: string | null } = {}) {
                 <li key={link.href}>
                   <Link
                     href={link.href}
-                    onClick={() => setNavbarOpen(false)}
+                    onClick={(e) => {
+                      setNavbarOpen(false)
+                      if (link.href === "/") handleHomeClick(e)
+                    }}
                     className={`flex items-center gap-2.5 rounded-xl px-3.5 py-2.5 text-sm font-medium ${
                       active ? "bg-accent text-primary" : "text-foreground"
                     }`}

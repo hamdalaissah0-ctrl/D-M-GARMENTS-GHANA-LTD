@@ -1,4 +1,5 @@
 import type { Metadata } from "next"
+import { Sparkles } from "lucide-react"
 import { PageShell } from "@/components/marketing/page-shell"
 import { ContentRequired } from "@/components/marketing/content-required"
 import { Card, CardContent } from "@/components/ui/card"
@@ -28,16 +29,28 @@ export default async function ServicesPage() {
         />
       ) : (
         <div className="grid gap-6 sm:grid-cols-2 lg:grid-cols-3">
-          {services.map((service) => (
-            <Card key={service.id}>
-              <CardContent className="p-5">
-                <p className="font-medium text-foreground">{service.name}</p>
-                <p className="mt-1 text-sm text-muted-foreground line-clamp-3">
-                  {service.description ?? "Content required"}
-                </p>
-              </CardContent>
-            </Card>
-          ))}
+          {services.map((service, i) => {
+            const filled = i % 3 === 1
+            return (
+              <Card key={service.id} className={filled ? "bg-brand-panel text-white" : ""}>
+                <CardContent className="p-6">
+                  <span
+                    className={`flex size-11 items-center justify-center rounded-xl ${
+                      filled ? "bg-white/10 text-white" : "bg-brand-cta text-white"
+                    }`}
+                  >
+                    <Sparkles className="size-5" />
+                  </span>
+                  <p className={`mt-4 font-semibold ${filled ? "text-white" : "text-foreground"}`}>
+                    {service.name}
+                  </p>
+                  <p className={`mt-1.5 text-sm line-clamp-3 ${filled ? "text-white/70" : "text-muted-foreground"}`}>
+                    {service.description ?? "Content required"}
+                  </p>
+                </CardContent>
+              </Card>
+            )
+          })}
         </div>
       )}
     </PageShell>

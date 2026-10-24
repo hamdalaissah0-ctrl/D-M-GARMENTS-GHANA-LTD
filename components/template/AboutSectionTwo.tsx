@@ -25,8 +25,8 @@ export default function AboutSectionTwo() {
         <div className="-mx-4 flex flex-wrap items-center">
           <div className="relative mx-auto mb-12 aspect-[4/5] w-full max-w-[500px] px-4 lg:mb-0 lg:w-1/2">
             <Image
-              src={`${MEDIA_BASE}/products/school-uniform-green.png`}
-              alt="D&M Garments — school uniform sample"
+              src={`${MEDIA_BASE}/products/embroidery-staff.webp`}
+              alt="D&M Garments staff member sewing a garment on the production floor"
               fill
               sizes="(min-width: 1024px) 500px, 100vw"
               className="shadow-three rounded-lg object-cover"

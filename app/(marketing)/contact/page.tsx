@@ -2,6 +2,7 @@ import type { Metadata } from "next"
 import { Phone, Mail, MapPin } from "lucide-react"
 import { PageShell } from "@/components/marketing/page-shell"
 import { ContactForm } from "@/components/marketing/contact-form"
+import { MapEmbed } from "@/components/marketing/map-embed"
 import { getCompanyProfile } from "@/lib/supabase/queries"
 
 export const metadata: Metadata = {
@@ -44,6 +45,7 @@ export default async function ContactPage() {
               <span>Content required</span>
             )}
           </div>
+          {company?.address && <MapEmbed address={company.address} className="mt-6" />}
         </div>
         <ContactForm />
       </div>

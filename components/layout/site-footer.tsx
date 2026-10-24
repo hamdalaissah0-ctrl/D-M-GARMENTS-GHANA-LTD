@@ -1,22 +1,34 @@
+"use client"
+
 import Link from "next/link"
+import { usePathname } from "next/navigation"
+import type { MouseEvent } from "react"
 import { Phone, Mail, MapPin } from "lucide-react"
 import { LogoMark } from "@/components/layout/logo-mark"
 import type { CompanyProfile } from "@/lib/supabase/queries"
 
 export function SiteFooter({ company }: { company: CompanyProfile | null }) {
   const year = new Date().getFullYear()
+  const pathname = usePathname()
+
+  function handleHomeClick(e: MouseEvent) {
+    if (pathname === "/") {
+      e.preventDefault()
+      window.scrollTo({ top: 0, behavior: "smooth" })
+    }
+  }
 
   return (
     <footer className="bg-brand-panel text-white">
       <div className="mx-auto max-w-7xl px-4 py-16 sm:px-6 lg:px-8">
         <div className="grid gap-10 md:grid-cols-4">
           <div className="md:col-span-2">
-            <div className="flex items-center gap-2.5">
-              <LogoMark />
+            <Link href="/" onClick={handleHomeClick} className="flex items-center gap-2.5">
+              <LogoMark alt="" />
               <span className="text-base font-semibold">
                 {company?.company_name ?? "D&M Garments Ghana Limited"}
               </span>
-            </div>
+            </Link>
             <p className="mt-4 max-w-sm text-sm text-white/60">
               Uniform and garment manufacturing — hospitality, corporate, workwear and PPE,
               with embroidery, DTF printing and branding built in.
@@ -28,7 +40,18 @@ export function SiteFooter({ company }: { company: CompanyProfile | null }) {
             <ul className="mt-3 space-y-2 text-sm text-white/60">
               <li className="flex items-start gap-2">
                 <MapPin className="mt-0.5 size-4 shrink-0 text-primary" />
-                <span>{company?.address ?? "Content required"}</span>
+                {company?.address ? (
+                  <a
+                    href={`https://www.google.com/maps/search/?api=1&query=${encodeURIComponent(company.address)}`}
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    className="hover:text-white"
+                  >
+                    {company.address}
+                  </a>
+                ) : (
+                  <span>Content required</span>
+                )}
               </li>
               <li className="flex items-center gap-2">
                 <Phone className="size-4 shrink-0 text-primary" />
@@ -90,10 +113,17 @@ export function SiteFooter({ company }: { company: CompanyProfile | null }) {
           </div>
         </div>
 
-        <div className="mt-12 border-t border-white/10 pt-6">
+        <div className="mt-12 flex flex-wrap items-center justify-between gap-3 border-t border-white/10 pt-6">
           <p className="text-xs text-white/40">
             © {year} {company?.company_name ?? "D&M Garments Ghana Limited"}. All rights reserved.
           </p>
+          <button
+            type="button"
+            onClick={() => window.scrollTo({ top: 0, behavior: "smooth" })}
+            className="flex items-center gap-1.5 rounded-full border border-white/15 px-3.5 py-1.5 text-xs font-semibold text-white/70 transition-colors hover:border-white/30 hover:text-white"
+          >
+            Back to top ↑
+          </button>
         </div>
       </div>
     </footer>

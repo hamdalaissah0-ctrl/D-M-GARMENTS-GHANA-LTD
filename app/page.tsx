@@ -62,7 +62,10 @@ export default async function HomePage() {
       />
       <SiteHeader phone={company?.phone_primary} />
       <main className="flex-1">
-        <Hero company={company} imageUrl={categories[0]?.image_url} />
+        <Hero
+          company={company}
+          imageUrl="https://otscslkmvhunzlxfrqse.supabase.co/storage/v1/object/public/media/branding/hero-banner.jpg"
+        />
         <Features />
         <AboutSectionOne />
 
