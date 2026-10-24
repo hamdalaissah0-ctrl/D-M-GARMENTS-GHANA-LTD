@@ -173,12 +173,12 @@ export default async function HomePage() {
         <Testimonials testimonials={testimonials} />
 
         {/* Final CTA */}
-        <section className="relative overflow-hidden bg-brand-hero text-white">
+        <section className="relative overflow-hidden" style={{ backgroundColor: "#8CC63E" }}>
           <div className="relative mx-auto flex max-w-7xl flex-col items-center gap-5 px-4 py-20 text-center sm:px-6 lg:px-8">
-            <h2 className="text-3xl font-bold tracking-tight sm:text-4xl">
+            <h2 className="text-3xl font-bold tracking-tight text-[#0F4D26] sm:text-4xl">
               Ready to talk about your order?
             </h2>
-            <p className="max-w-lg text-white/65">
+            <p className="max-w-lg text-[#0F4D26]">
               Tell us what you need and our team will review your request and get in touch —
               no payment required to start.
             </p>
@@ -186,7 +186,7 @@ export default async function HomePage() {
               <Button
                 size="lg"
                 nativeButton={false}
-                className="rounded-full bg-brand-cta text-white shadow-lg shadow-black/20 hover:opacity-90"
+                className="rounded-full bg-[#0F4D26] text-white shadow-lg shadow-black/10 hover:opacity-90"
                 render={
                   <Link href="/products">
                     Request a Quote <ArrowRight className="ms-1 size-4" />
@@ -198,7 +198,7 @@ export default async function HomePage() {
                   size="lg"
                   variant="outline"
                   nativeButton={false}
-                  className="rounded-full border-white/25 bg-white/5 text-white hover:bg-white/10"
+                  className="rounded-full border-[#0F4D26]/30 bg-white/30 text-[#0F4D26] hover:bg-white/50"
                   render={
                     <a href={`tel:${company.phone_primary}`}>
                       <Phone className="size-4" /> Call D&amp;M
