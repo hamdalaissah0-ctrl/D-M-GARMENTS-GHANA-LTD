@@ -5,6 +5,7 @@ import { Tabs, TabsList, TabsTrigger, TabsContent } from "@/components/ui/tabs"
 import { TestimonialFormDialog } from "@/components/admin/testimonial-form-dialog"
 import { FaqFormDialog } from "@/components/admin/faq-form-dialog"
 import { PortfolioFormDialog } from "@/components/admin/portfolio-form-dialog"
+import { VideoFormDialog } from "@/components/admin/video-form-dialog"
 import { getCurrentStaffProfile } from "@/lib/supabase/queries"
 import { createClient } from "@/lib/supabase/server"
 
@@ -21,13 +22,19 @@ export default async function AdminContentPage() {
   }
 
   const supabase = await createClient()
-  const [{ data: testimonials }, { data: faqs }, { data: portfolioProjects }, { data: portfolioImages }] =
-    await Promise.all([
-      supabase.from("testimonials").select("*").order("created_at", { ascending: false }),
-      supabase.from("faqs").select("*").order("created_at", { ascending: false }),
-      supabase.from("portfolio_projects").select("*").order("created_at", { ascending: false }),
-      supabase.from("portfolio_images").select("*"),
-    ])
+  const [
+    { data: testimonials },
+    { data: faqs },
+    { data: portfolioProjects },
+    { data: portfolioImages },
+    { data: portfolioVideos },
+  ] = await Promise.all([
+    supabase.from("testimonials").select("*").order("created_at", { ascending: false }),
+    supabase.from("faqs").select("*").order("created_at", { ascending: false }),
+    supabase.from("portfolio_projects").select("*").order("created_at", { ascending: false }),
+    supabase.from("portfolio_images").select("*"),
+    supabase.from("portfolio_videos").select("*").order("sort_order", { ascending: true }),
+  ])
 
   const imageByProject = new Map((portfolioImages ?? []).map((img) => [img.portfolio_project_id, img.storage_path]))
 
@@ -37,6 +44,7 @@ export default async function AdminContentPage() {
         <TabsTrigger value="testimonials">Testimonials</TabsTrigger>
         <TabsTrigger value="faqs">FAQs</TabsTrigger>
         <TabsTrigger value="portfolio">Portfolio</TabsTrigger>
+        <TabsTrigger value="videos">Videos</TabsTrigger>
       </TabsList>
 
       <TabsContent value="testimonials" className="mt-5 space-y-5">
@@ -116,6 +124,44 @@ export default async function AdminContentPage() {
                     <div className="flex items-center gap-2">
                       <Badge className={STATUS_CLASSES[p.status]}>{p.status}</Badge>
                       <PortfolioFormDialog project={p} currentImageUrl={imageByProject.get(p.id) ?? null} />
+                    </div>
+                  </div>
+                ))}
+              </div>
+            )}
+          </CardContent>
+        </Card>
+      </TabsContent>
+
+      <TabsContent value="videos" className="mt-5 space-y-5">
+        <div className="flex justify-end">
+          <VideoFormDialog />
+        </div>
+        <Card>
+          <CardContent className="p-0">
+            {!portfolioVideos || portfolioVideos.length === 0 ? (
+              <p className="p-8 text-center text-sm text-muted-foreground">No videos yet.</p>
+            ) : (
+              <div className="divide-y divide-border">
+                {portfolioVideos.map((v) => (
+                  <div key={v.id} className="flex items-center justify-between gap-3 p-4">
+                    <div className="flex min-w-0 items-center gap-3">
+                      {/* eslint-disable-next-line @next/next/no-img-element */}
+                      <img
+                        src={v.thumbnail_url}
+                        alt=""
+                        className="size-12 shrink-0 rounded-lg border border-border object-cover"
+                      />
+                      <div className="min-w-0">
+                        <p className="font-medium text-foreground">{v.title}</p>
+                        <p className="truncate text-sm text-muted-foreground">
+                          {v.category} {v.featured ? "· Featured" : ""}
+                        </p>
+                      </div>
+                    </div>
+                    <div className="flex items-center gap-2">
+                      <Badge className={STATUS_CLASSES[v.status]}>{v.status}</Badge>
+                      <VideoFormDialog video={v} />
                     </div>
                   </div>
                 ))}

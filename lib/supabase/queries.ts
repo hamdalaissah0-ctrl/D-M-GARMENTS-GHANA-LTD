@@ -7,6 +7,7 @@ export type Category = Tables<"categories">
 export type Product = Tables<"products">
 export type Testimonial = Tables<"testimonials">
 export type PortfolioProject = Tables<"portfolio_projects">
+export type PortfolioVideo = Tables<"portfolio_videos">
 export type Faq = Tables<"faqs">
 
 export async function getCompanyProfile(): Promise<CompanyProfile | null> {
@@ -60,6 +61,28 @@ export async function getFeaturedPortfolio(): Promise<PortfolioProject[]> {
     .eq("featured", true)
     .order("sort_order", { ascending: true })
   return data ?? []
+}
+
+export async function getPublishedVideos(): Promise<PortfolioVideo[]> {
+  const supabase = await createClient()
+  const { data } = await supabase
+    .from("portfolio_videos")
+    .select("*")
+    .eq("status", "published")
+    .order("sort_order", { ascending: true })
+  return data ?? []
+}
+
+export async function getFeaturedVideo(): Promise<PortfolioVideo | null> {
+  const supabase = await createClient()
+  const { data } = await supabase
+    .from("portfolio_videos")
+    .select("*")
+    .eq("status", "published")
+    .eq("featured", true)
+    .order("sort_order", { ascending: true })
+    .limit(1)
+  return data?.[0] ?? null
 }
 
 export async function getPublishedFaqs(): Promise<Faq[]> {

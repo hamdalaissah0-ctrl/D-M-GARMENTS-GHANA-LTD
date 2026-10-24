@@ -8,6 +8,7 @@ import { ContentRequired } from "@/components/marketing/content-required"
 import { MissionVisionBanners } from "@/components/marketing/mission-vision-banners"
 import { ScrollReveal } from "@/components/marketing/scroll-reveal"
 import { SectionEyebrow } from "@/components/marketing/section-eyebrow"
+import { VideoTeaser } from "@/components/marketing/video-teaser"
 import Hero from "@/components/template/Hero"
 import Features from "@/components/template/Features"
 import AboutSectionOne from "@/components/template/AboutSectionOne"
@@ -17,6 +18,7 @@ import {
   getCompanyProfile,
   getPublishedTestimonials,
   getPublishedCategories,
+  getPublishedVideos,
 } from "@/lib/supabase/queries"
 import {
   ArrowRight,
@@ -36,10 +38,11 @@ const HOW_IT_WORKS = [
 ]
 
 export default async function HomePage() {
-  const [company, testimonials, categories] = await Promise.all([
+  const [company, testimonials, categories, videos] = await Promise.all([
     getCompanyProfile(),
     getPublishedTestimonials(),
     getPublishedCategories(),
+    getPublishedVideos(),
   ])
 
   const siteUrl = process.env.NEXT_PUBLIC_SITE_URL ?? "http://localhost:3000"
@@ -171,6 +174,8 @@ export default async function HomePage() {
         </section>
 
         <Testimonials testimonials={testimonials} />
+
+        <VideoTeaser videos={videos} />
 
         {/* Final CTA */}
         <section className="relative overflow-hidden" style={{ backgroundColor: "#8CC63E" }}>

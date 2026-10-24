@@ -1012,6 +1012,57 @@ export type Database = {
         }
         Relationships: []
       }
+      portfolio_videos: {
+        Row: {
+          category: string
+          created_at: string
+          description: string | null
+          duration_seconds: number | null
+          featured: boolean
+          height: number | null
+          id: string
+          sort_order: number
+          status: Database["public"]["Enums"]["content_status"]
+          thumbnail_url: string
+          title: string
+          updated_at: string
+          video_url: string
+          width: number | null
+        }
+        Insert: {
+          category: string
+          created_at?: string
+          description?: string | null
+          duration_seconds?: number | null
+          featured?: boolean
+          height?: number | null
+          id?: string
+          sort_order?: number
+          status?: Database["public"]["Enums"]["content_status"]
+          thumbnail_url: string
+          title: string
+          updated_at?: string
+          video_url: string
+          width?: number | null
+        }
+        Update: {
+          category?: string
+          created_at?: string
+          description?: string | null
+          duration_seconds?: number | null
+          featured?: boolean
+          height?: number | null
+          id?: string
+          sort_order?: number
+          status?: Database["public"]["Enums"]["content_status"]
+          thumbnail_url?: string
+          title?: string
+          updated_at?: string
+          video_url?: string
+          width?: number | null
+        }
+        Relationships: []
+      }
       product_features: {
         Row: {
           id: string

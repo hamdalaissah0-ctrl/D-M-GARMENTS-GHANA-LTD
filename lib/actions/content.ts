@@ -149,3 +149,53 @@ export async function deletePortfolioProject(id: string) {
   revalidatePath("/admin/content")
   revalidatePath("/portfolio")
 }
+
+// ---- Portfolio videos ----
+
+export interface PortfolioVideoInput {
+  id?: string
+  title: string
+  description: string | null
+  category: string
+  video_url: string
+  thumbnail_url: string
+  duration_seconds: number | null
+  width: number | null
+  height: number | null
+  featured: boolean
+  status: ContentStatus
+}
+
+export async function upsertPortfolioVideo(input: PortfolioVideoInput) {
+  const supabase = await createClient()
+  const payload = {
+    title: input.title,
+    description: input.description,
+    category: input.category,
+    video_url: input.video_url,
+    thumbnail_url: input.thumbnail_url,
+    duration_seconds: input.duration_seconds,
+    width: input.width,
+    height: input.height,
+    featured: input.featured,
+    status: input.status,
+  }
+
+  const { error } = input.id
+    ? await supabase.from("portfolio_videos").update(payload).eq("id", input.id)
+    : await supabase.from("portfolio_videos").insert(payload)
+
+  if (error) throw new Error(error.message)
+  revalidatePath("/admin/content")
+  revalidatePath("/portfolio")
+  revalidatePath("/")
+}
+
+export async function deletePortfolioVideo(id: string) {
+  const supabase = await createClient()
+  const { error } = await supabase.from("portfolio_videos").delete().eq("id", id)
+  if (error) throw new Error(error.message)
+  revalidatePath("/admin/content")
+  revalidatePath("/portfolio")
+  revalidatePath("/")
+}

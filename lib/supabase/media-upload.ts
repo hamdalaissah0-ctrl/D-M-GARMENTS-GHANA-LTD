@@ -1,14 +1,26 @@
 import { createClient } from "@/lib/supabase/client"
 
-const ALLOWED_MIME_TYPES = ["image/jpeg", "image/png", "image/webp"]
+const ALLOWED_IMAGE_MIME_TYPES = ["image/jpeg", "image/png", "image/webp"]
+const ALLOWED_VIDEO_MIME_TYPES = ["video/mp4", "video/quicktime", "video/webm"]
 const MAX_FILE_SIZE_BYTES = 10 * 1024 * 1024
+const MAX_VIDEO_SIZE_BYTES = 40 * 1024 * 1024
 
 export function validateMediaFile(file: File): string | null {
-  if (!ALLOWED_MIME_TYPES.includes(file.type)) {
+  if (!ALLOWED_IMAGE_MIME_TYPES.includes(file.type)) {
     return `${file.name}: unsupported file type. Use JPG, PNG or WEBP.`
   }
   if (file.size > MAX_FILE_SIZE_BYTES) {
     return `${file.name}: file is too large (max 10 MB).`
+  }
+  return null
+}
+
+export function validateVideoFile(file: File): string | null {
+  if (!ALLOWED_VIDEO_MIME_TYPES.includes(file.type)) {
+    return `${file.name}: unsupported file type. Use MP4, MOV or WEBM.`
+  }
+  if (file.size > MAX_VIDEO_SIZE_BYTES) {
+    return `${file.name}: file is too large (max 40 MB).`
   }
   return null
 }
