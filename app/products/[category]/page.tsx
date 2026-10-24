@@ -40,7 +40,7 @@ export default async function CategoryPage({
 
   return (
     <>
-      <SiteHeader />
+      <SiteHeader phone={company?.phone_primary} />
       <main className="flex-1">
         <div className="mx-auto max-w-6xl px-4 py-12 sm:px-6 lg:px-8">
           <div className="grid gap-10 lg:grid-cols-2">

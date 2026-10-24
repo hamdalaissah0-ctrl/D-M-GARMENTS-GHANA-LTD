@@ -1,95 +1,125 @@
-// Sticky/mobile-menu behavior ported from NextJSTemplates/startup-nextjs
-// (MIT License), adapted to D&M's real nav, logo and CTA.
 "use client"
 
 import { useEffect, useState } from "react"
 import Link from "next/link"
 import { usePathname } from "next/navigation"
-import { Menu, X } from "lucide-react"
+import { Menu, X, Home, Shirt, Images, Info, Mail, Phone } from "lucide-react"
 import { LogoMark } from "@/components/layout/logo-mark"
 
 const NAV_LINKS = [
-  { href: "/products", label: "Services" },
-  { href: "/portfolio", label: "Portfolio" },
-  { href: "/about", label: "About" },
-  { href: "/contact", label: "Contact" },
+  { href: "/", label: "Home", icon: Home },
+  { href: "/products", label: "Services", icon: Shirt },
+  { href: "/portfolio", label: "Portfolio", icon: Images },
+  { href: "/about", label: "About", icon: Info },
+  { href: "/contact", label: "Contact", icon: Mail },
 ]
 
-export function SiteHeader() {
+export function SiteHeader({ phone }: { phone?: string | null } = {}) {
   const [navbarOpen, setNavbarOpen] = useState(false)
-  const [sticky, setSticky] = useState(false)
   const pathname = usePathname()
 
   useEffect(() => {
-    const handleScroll = () => setSticky(window.scrollY >= 80)
-    window.addEventListener("scroll", handleScroll)
-    return () => window.removeEventListener("scroll", handleScroll)
-  }, [])
+    document.body.style.overflow = navbarOpen ? "hidden" : ""
+    return () => {
+      document.body.style.overflow = ""
+    }
+  }, [navbarOpen])
 
   return (
-    <header
-      className={`sticky top-0 left-0 z-40 flex w-full items-center border-b border-transparent bg-white/95 backdrop-blur-sm transition ${
-        sticky ? "shadow-sticky border-body-color/10" : ""
-      }`}
-    >
-      <div className="container">
-        <div className="relative -mx-4 flex items-center justify-between">
-          <div className="w-60 max-w-full px-4">
-            <Link href="/" className="block w-full py-4">
-              <div className="flex items-center gap-2.5">
-                <LogoMark />
-                <span className="flex flex-col leading-none whitespace-nowrap">
-                  <span className="text-base font-semibold tracking-tight text-black">
-                    D&amp;M Garments
-                  </span>
-                  <span className="text-[11px] text-body-color">Ghana Limited</span>
-                </span>
-              </div>
+    <header className="sticky top-0 z-40 w-full px-3 pt-3 sm:px-4">
+      <div className="mx-auto flex max-w-6xl items-center justify-between gap-2 rounded-full border border-border/70 bg-white/95 py-1.5 pr-1.5 pl-3 shadow-sm backdrop-blur-sm sm:pl-4">
+        <Link href="/" className="flex shrink-0 items-center gap-2">
+          <LogoMark className="size-8" />
+          <span className="hidden text-sm font-semibold tracking-tight text-foreground sm:inline">
+            D&amp;M <span className="text-primary">Garments</span>
+          </span>
+        </Link>
+
+        <nav className="hidden items-center gap-1 lg:flex">
+          {NAV_LINKS.map((link) => {
+            const active = pathname === link.href
+            return (
+              <Link
+                key={link.href}
+                href={link.href}
+                className={`flex items-center gap-1.5 rounded-full px-3.5 py-2 text-sm font-medium transition-colors ${
+                  active ? "bg-accent text-primary" : "text-muted-foreground hover:text-foreground"
+                }`}
+              >
+                <link.icon className="size-3.5" />
+                {link.label}
+              </Link>
+            )
+          })}
+        </nav>
+
+        <div className="hidden items-center gap-2 lg:flex">
+          {phone && (
+            <a
+              href={`tel:${phone}`}
+              className="flex items-center gap-1.5 rounded-full border border-border px-4 py-2 text-sm font-semibold text-foreground transition-colors hover:bg-accent"
+            >
+              <Phone className="size-3.5" /> Call Us
+            </a>
+          )}
+          <Link
+            href="/order"
+            className="rounded-full bg-foreground px-4 py-2 text-sm font-semibold text-background transition-opacity hover:opacity-90"
+          >
+            Request a Quote
+          </Link>
+        </div>
+
+        <button
+          onClick={() => setNavbarOpen((v) => !v)}
+          aria-label="Toggle menu"
+          className="flex size-9 shrink-0 items-center justify-center rounded-full text-foreground lg:hidden"
+        >
+          {navbarOpen ? <X className="size-5" /> : <Menu className="size-5" />}
+        </button>
+      </div>
+
+      {navbarOpen && (
+        <nav className="mx-auto mt-2 max-w-6xl rounded-3xl border border-border/70 bg-white p-4 shadow-lg lg:hidden">
+          <ul className="flex flex-col gap-1">
+            {NAV_LINKS.map((link) => {
+              const active = pathname === link.href
+              return (
+                <li key={link.href}>
+                  <Link
+                    href={link.href}
+                    onClick={() => setNavbarOpen(false)}
+                    className={`flex items-center gap-2.5 rounded-xl px-3.5 py-2.5 text-sm font-medium ${
+                      active ? "bg-accent text-primary" : "text-foreground"
+                    }`}
+                  >
+                    <link.icon className="size-4" />
+                    {link.label}
+                  </Link>
+                </li>
+              )
+            })}
+          </ul>
+          <div className="mt-3 flex flex-col gap-2 border-t border-border/70 pt-3">
+            {phone && (
+              <a
+                href={`tel:${phone}`}
+                onClick={() => setNavbarOpen(false)}
+                className="flex items-center justify-center gap-1.5 rounded-full border border-border px-4 py-2.5 text-sm font-semibold text-foreground"
+              >
+                <Phone className="size-3.5" /> Call Us
+              </a>
+            )}
+            <Link
+              href="/order"
+              onClick={() => setNavbarOpen(false)}
+              className="rounded-full bg-foreground px-4 py-2.5 text-center text-sm font-semibold text-background"
+            >
+              Request a Quote
             </Link>
           </div>
-
-          <div className="flex w-full items-center justify-end px-4">
-            <button
-              onClick={() => setNavbarOpen((v) => !v)}
-              aria-label="Toggle menu"
-              className="ring-primary absolute top-1/2 right-4 block translate-y-[-50%] rounded-lg px-3 py-[6px] focus:ring-2 lg:hidden"
-            >
-              {navbarOpen ? <X className="size-6" /> : <Menu className="size-6" />}
-            </button>
-
-            <nav
-              className={`border-body-color/20 absolute right-4 z-30 w-[250px] rounded border bg-white px-6 py-4 duration-300 lg:visible lg:static lg:flex lg:w-auto lg:items-center lg:gap-10 lg:border-none lg:bg-transparent! lg:p-0 lg:opacity-100 ${
-                navbarOpen ? "top-full opacity-100" : "invisible top-[120%] opacity-0 lg:visible lg:opacity-100"
-              }`}
-            >
-              <ul className="block lg:flex lg:items-center lg:gap-8">
-                {NAV_LINKS.map((link) => (
-                  <li key={link.href}>
-                    <Link
-                      href={link.href}
-                      onClick={() => setNavbarOpen(false)}
-                      className={`flex py-2 text-base lg:inline-flex lg:py-6 ${
-                        pathname === link.href
-                          ? "text-primary"
-                          : "text-dark hover:text-primary"
-                      }`}
-                    >
-                      {link.label}
-                    </Link>
-                  </li>
-                ))}
-              </ul>
-              <Link
-                href="/order"
-                onClick={() => setNavbarOpen(false)}
-                className="bg-primary mt-3 block rounded-xs px-6 py-2.5 text-center text-sm font-semibold text-white duration-300 hover:opacity-90 lg:mt-0 lg:inline-block"
-              >
-                Request a Quote
-              </Link>
-            </nav>
-          </div>
-        </div>
-      </div>
+        </nav>
+      )}
     </header>
   )
 }

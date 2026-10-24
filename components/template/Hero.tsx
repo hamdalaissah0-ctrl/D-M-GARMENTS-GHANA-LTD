@@ -1,128 +1,107 @@
-// Layout/structure ported from NextJSTemplates/startup-nextjs (MIT License),
-// recoloured to the D&M brand green and filled with real content.
 import Link from "next/link"
-import { Phone } from "lucide-react"
+import Image from "next/image"
+import { Phone, MessageCircle, ShieldCheck, Scissors, Truck } from "lucide-react"
+import { SectionEyebrow } from "@/components/marketing/section-eyebrow"
 import type { CompanyProfile } from "@/lib/supabase/queries"
 
-export default function Hero({ company }: { company: CompanyProfile | null }) {
+const FLOATING_BADGES = [
+  { icon: Scissors, label: "Embroidery & DTF Printing", position: "top-6 -left-6 sm:-left-10" },
+  { icon: ShieldCheck, label: "Quality Checked", position: "top-1/2 -right-4 -translate-y-1/2 sm:-right-10" },
+  { icon: Truck, label: "Nationwide Delivery", position: "bottom-6 -left-4 sm:-left-8" },
+]
+
+export default function Hero({
+  company,
+  imageUrl,
+}: {
+  company: CompanyProfile | null
+  imageUrl?: string | null
+}) {
+  const whatsappNumber = company?.phone_primary?.replace(/[^0-9]/g, "")
+
   return (
-    <section
-      id="home"
-      className="relative z-10 overflow-hidden bg-white py-16 md:py-20 lg:py-28"
-    >
-      <div className="container">
-        <div className="-mx-4 flex flex-wrap">
-          <div className="w-full px-4">
-            <div className="mx-auto max-w-[800px] text-center">
-              <span className="border-stroke-stroke mb-5 inline-block rounded-full border px-4 py-1.5 text-xs font-semibold tracking-wide text-primary uppercase">
-                D&amp;M Garments Ghana Limited
-              </span>
-              <h1 className="text-black mb-5 text-3xl leading-tight font-bold sm:text-4xl sm:leading-tight md:text-5xl md:leading-tight">
-                High-Quality Garments, Made for Your Business
-              </h1>
-              <p className="text-body-color mb-12 text-base leading-relaxed! sm:text-lg md:text-xl">
-                {company?.company_name ?? "D&M Garments Ghana Limited"} manufactures
-                hospitality, corporate, workwear and PPE uniforms — with embroidery, DTF
-                printing and branding built in.
-                {company?.no_moq ? " No minimum order quantity." : ""}
-              </p>
-              <div className="flex flex-col items-center justify-center space-y-4 sm:flex-row sm:space-y-0 sm:space-x-4">
-                <Link
-                  href="/products"
-                  className="bg-primary rounded-xs px-8 py-4 text-base font-semibold text-white duration-300 ease-in-out hover:opacity-90"
-                >
-                  Request a Quote
-                </Link>
-                {company?.phone_primary && (
-                  <a
-                    href={`tel:${company.phone_primary}`}
-                    className="text-black inline-flex items-center gap-2 rounded-xs bg-black/5 px-8 py-4 text-base font-semibold duration-300 ease-in-out hover:bg-black/10"
-                  >
-                    <Phone className="size-4" /> {company.phone_primary}
-                  </a>
-                )}
-              </div>
-            </div>
-          </div>
-        </div>
+    <section className="relative overflow-hidden bg-secondary/20 py-14 sm:py-20">
+      <div className="pointer-events-none absolute inset-0 -z-10">
+        <div className="absolute -top-24 -left-24 size-96 rounded-full bg-primary/10 blur-3xl" />
+        <div className="absolute top-1/3 -right-24 size-96 rounded-full bg-primary/10 blur-3xl" />
       </div>
 
-      <div className="absolute top-0 right-0 z-[-1] opacity-30 lg:opacity-100">
-        <svg width="450" height="556" viewBox="0 0 450 556" fill="none" xmlns="http://www.w3.org/2000/svg">
-          <circle cx="277" cy="63" r="225" fill="url(#paint0_linear_hero)" />
-          <circle cx="17.9997" cy="182" r="18" fill="url(#paint1_radial_hero)" />
-          <circle cx="76.9997" cy="288" r="34" fill="url(#paint2_radial_hero)" />
-          <circle
-            cx="325.486"
-            cy="302.87"
-            r="180"
-            transform="rotate(-37.6852 325.486 302.87)"
-            fill="url(#paint3_linear_hero)"
-          />
-          <defs>
-            <linearGradient id="paint0_linear_hero" x1="-54.5003" y1="-178" x2="222" y2="288" gradientUnits="userSpaceOnUse">
-              <stop stopColor="#0B5A34" />
-              <stop offset="1" stopColor="#0B5A34" stopOpacity="0" />
-            </linearGradient>
-            <radialGradient
-              id="paint1_radial_hero"
-              cx="0"
-              cy="0"
-              r="1"
-              gradientUnits="userSpaceOnUse"
-              gradientTransform="translate(17.9997 182) rotate(90) scale(18)"
+      <div className="mx-auto grid max-w-7xl items-center gap-12 px-4 sm:px-6 lg:grid-cols-2 lg:px-8">
+        <div>
+          <SectionEyebrow>GARMENT MANUFACTURING · GHANA</SectionEyebrow>
+          <h1 className="mt-5 text-4xl leading-[1.1] font-bold tracking-tight text-foreground sm:text-5xl">
+            High-Quality Uniforms, <span className="text-primary">Made Right.</span>
+          </h1>
+          <p className="mt-5 max-w-lg text-base leading-relaxed text-muted-foreground sm:text-lg">
+            {company?.company_name ?? "D&M Garments Ghana Limited"} manufactures hospitality,
+            corporate, workwear and PPE uniforms — with embroidery, DTF printing and branding
+            built in.
+            {company?.no_moq ? " No minimum order quantity." : ""}
+          </p>
+
+          <div className="mt-8 flex flex-col gap-3 sm:flex-row">
+            {whatsappNumber ? (
+              <a
+                href={`https://wa.me/${whatsappNumber}`}
+                target="_blank"
+                rel="noopener noreferrer"
+                className="inline-flex items-center justify-center gap-2 rounded-full bg-brand-cta px-6 py-3.5 text-sm font-semibold text-white shadow-lg shadow-primary/20 transition-opacity hover:opacity-90"
+              >
+                <MessageCircle className="size-4" /> WhatsApp Us
+              </a>
+            ) : (
+              <Link
+                href="/products"
+                className="inline-flex items-center justify-center gap-2 rounded-full bg-brand-cta px-6 py-3.5 text-sm font-semibold text-white shadow-lg shadow-primary/20 transition-opacity hover:opacity-90"
+              >
+                Request a Quote
+              </Link>
+            )}
+            {company?.phone_primary && (
+              <a
+                href={`tel:${company.phone_primary}`}
+                className="inline-flex items-center justify-center gap-2 rounded-full border border-border bg-white px-6 py-3.5 text-sm font-semibold text-foreground transition-colors hover:bg-accent"
+              >
+                <Phone className="size-4" /> Call Us
+              </a>
+            )}
+          </div>
+
+          <p className="mt-6 flex items-center gap-2 text-sm text-muted-foreground">
+            <ShieldCheck className="size-4 shrink-0 text-primary" />
+            Every order goes through a quality check before it ships.
+          </p>
+        </div>
+
+        <div className="relative mx-auto w-full max-w-md lg:max-w-none">
+          <div className="relative aspect-square overflow-hidden rounded-[2.5rem] bg-accent">
+            {imageUrl ? (
+              <Image
+                src={imageUrl}
+                alt="D&M Garments Ghana Limited — manufactured uniforms"
+                fill
+                sizes="(min-width: 1024px) 480px, 90vw"
+                className="object-cover"
+                priority
+              />
+            ) : (
+              <div className="flex h-full items-center justify-center text-sm text-muted-foreground">
+                Content required
+              </div>
+            )}
+          </div>
+          {FLOATING_BADGES.map(({ icon: Icon, label, position }) => (
+            <div
+              key={label}
+              className={`absolute hidden items-center gap-2 rounded-2xl border border-border/70 bg-white/95 px-3.5 py-2.5 text-xs font-semibold text-foreground shadow-lg backdrop-blur-sm sm:flex ${position}`}
             >
-              <stop offset="0.145833" stopColor="#0B5A34" stopOpacity="0" />
-              <stop offset="1" stopColor="#0B5A34" stopOpacity="0.08" />
-            </radialGradient>
-            <radialGradient
-              id="paint2_radial_hero"
-              cx="0"
-              cy="0"
-              r="1"
-              gradientUnits="userSpaceOnUse"
-              gradientTransform="translate(76.9997 288) rotate(90) scale(34)"
-            >
-              <stop offset="0.145833" stopColor="#0B5A34" stopOpacity="0" />
-              <stop offset="1" stopColor="#0B5A34" stopOpacity="0.08" />
-            </radialGradient>
-            <linearGradient id="paint3_linear_hero" x1="226.775" y1="-66.1548" x2="292.157" y2="351.421" gradientUnits="userSpaceOnUse">
-              <stop stopColor="#0B5A34" />
-              <stop offset="1" stopColor="#0B5A34" stopOpacity="0" />
-            </linearGradient>
-          </defs>
-        </svg>
-      </div>
-      <div className="absolute bottom-0 left-0 z-[-1] opacity-30 lg:opacity-100">
-        <svg width="364" height="201" viewBox="0 0 364 201" fill="none" xmlns="http://www.w3.org/2000/svg">
-          <path
-            d="M5.88928 72.3303C33.6599 66.4798 101.397 64.9086 150.178 105.427C211.155 156.076 229.59 162.093 264.333 166.607C299.076 171.12 337.718 183.657 362.889 212.24"
-            stroke="url(#paint0_linear_hero2)"
-          />
-          <circle opacity="0.8" cx="214.505" cy="60.5054" r="49.7205" transform="rotate(-13.421 214.505 60.5054)" stroke="url(#paint1_linear_hero2)" />
-          <circle cx="220" cy="63" r="43" fill="url(#paint2_radial_hero2)" />
-          <defs>
-            <linearGradient id="paint0_linear_hero2" x1="184.389" y1="69.2405" x2="184.389" y2="212.24" gradientUnits="userSpaceOnUse">
-              <stop stopColor="#0B5A34" stopOpacity="0" />
-              <stop offset="1" stopColor="#0B5A34" />
-            </linearGradient>
-            <linearGradient id="paint1_linear_hero2" x1="214.505" y1="10.2849" x2="212.684" y2="99.5816" gradientUnits="userSpaceOnUse">
-              <stop stopColor="#0B5A34" />
-              <stop offset="1" stopColor="#0B5A34" stopOpacity="0" />
-            </linearGradient>
-            <radialGradient
-              id="paint2_radial_hero2"
-              cx="0"
-              cy="0"
-              r="1"
-              gradientUnits="userSpaceOnUse"
-              gradientTransform="translate(220 63) rotate(90) scale(43)"
-            >
-              <stop offset="0.145833" stopColor="#0B5A34" stopOpacity="0" />
-              <stop offset="1" stopColor="#0B5A34" stopOpacity="0.08" />
-            </radialGradient>
-          </defs>
-        </svg>
+              <span className="flex size-6 items-center justify-center rounded-lg bg-accent text-primary">
+                <Icon className="size-3.5" />
+              </span>
+              {label}
+            </div>
+          ))}
+        </div>
       </div>
     </section>
   )

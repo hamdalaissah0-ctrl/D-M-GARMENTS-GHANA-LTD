@@ -7,6 +7,7 @@ import { SiteFooter } from "@/components/layout/site-footer"
 import { ContentRequired } from "@/components/marketing/content-required"
 import { MissionVisionBanners } from "@/components/marketing/mission-vision-banners"
 import { ScrollReveal } from "@/components/marketing/scroll-reveal"
+import { SectionEyebrow } from "@/components/marketing/section-eyebrow"
 import Hero from "@/components/template/Hero"
 import Features from "@/components/template/Features"
 import AboutSectionOne from "@/components/template/AboutSectionOne"
@@ -59,9 +60,9 @@ export default async function HomePage() {
         type="application/ld+json"
         dangerouslySetInnerHTML={{ __html: JSON.stringify(organizationJsonLd) }}
       />
-      <SiteHeader />
+      <SiteHeader phone={company?.phone_primary} />
       <main className="flex-1">
-        <Hero company={company} />
+        <Hero company={company} imageUrl={categories[0]?.image_url} />
         <Features />
         <AboutSectionOne />
 
@@ -72,9 +73,7 @@ export default async function HomePage() {
           <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
             <ScrollReveal className="flex items-end justify-between">
               <div>
-                <span className="text-sm font-semibold tracking-wide text-primary uppercase">
-                  What We Manufacture
-                </span>
+                <SectionEyebrow>What We Manufacture</SectionEyebrow>
                 <h2 className="mt-3 text-3xl font-bold tracking-tight text-foreground sm:text-4xl">
                   Browse Our Services
                 </h2>
@@ -132,27 +131,38 @@ export default async function HomePage() {
         <section className="bg-secondary/30 py-20">
           <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
             <ScrollReveal className="max-w-2xl">
-              <span className="text-sm font-semibold tracking-wide text-primary uppercase">
-                Our Process
-              </span>
+              <SectionEyebrow>Our Process</SectionEyebrow>
               <h2 className="mt-3 text-3xl font-bold tracking-tight text-foreground sm:text-4xl">
                 How Ordering Works
               </h2>
             </ScrollReveal>
             <div className="mt-12 grid gap-5 sm:grid-cols-2 lg:grid-cols-4">
-              {HOW_IT_WORKS.map(({ icon: Icon, label, description }, i) => (
-                <ScrollReveal key={label} direction="up" className={`delay-${i}`}>
-                  <Card className="h-full border-border/70">
-                    <CardContent className="flex h-full flex-col p-6">
-                      <span className="flex size-11 items-center justify-center rounded-xl bg-brand-cta text-white">
-                        <Icon className="size-5" />
-                      </span>
-                      <p className="mt-5 font-semibold text-foreground">{label}</p>
-                      <p className="mt-1.5 text-sm text-muted-foreground">{description}</p>
-                    </CardContent>
-                  </Card>
-                </ScrollReveal>
-              ))}
+              {HOW_IT_WORKS.map(({ icon: Icon, label, description }, i) => {
+                const filled = i % 2 === 1
+                return (
+                  <ScrollReveal key={label} direction="up" className={`delay-${i}`}>
+                    <Card
+                      className={`h-full border-border/70 ${filled ? "bg-brand-panel text-white" : ""}`}
+                    >
+                      <CardContent className="flex h-full flex-col p-6">
+                        <span
+                          className={`flex size-11 items-center justify-center rounded-xl ${
+                            filled ? "bg-white/10 text-white" : "bg-brand-cta text-white"
+                          }`}
+                        >
+                          <Icon className="size-5" />
+                        </span>
+                        <p className={`mt-5 font-semibold ${filled ? "text-white" : "text-foreground"}`}>
+                          {label}
+                        </p>
+                        <p className={`mt-1.5 text-sm ${filled ? "text-white/70" : "text-muted-foreground"}`}>
+                          {description}
+                        </p>
+                      </CardContent>
+                    </Card>
+                  </ScrollReveal>
+                )
+              })}
             </div>
           </div>
         </section>

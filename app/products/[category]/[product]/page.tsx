@@ -65,7 +65,7 @@ export default async function ProductPage({
 
   return (
     <>
-      <SiteHeader />
+      <SiteHeader phone={company?.phone_primary} />
       <main className="flex-1">
         <div className="mx-auto grid max-w-7xl gap-10 px-4 py-16 sm:px-6 lg:grid-cols-2 lg:px-8">
           <div>

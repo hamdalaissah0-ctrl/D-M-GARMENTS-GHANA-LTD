@@ -15,7 +15,7 @@ export default async function OrderPage() {
 
   return (
     <>
-      <SiteHeader />
+      <SiteHeader phone={company?.phone_primary} />
       <main className="flex-1">
         <div className="mx-auto max-w-7xl px-4 py-16 sm:px-6 lg:px-8">
           <div className="mx-auto mb-10 max-w-3xl text-center">
