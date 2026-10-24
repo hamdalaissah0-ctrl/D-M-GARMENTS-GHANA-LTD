@@ -76,43 +76,43 @@ export default async function PortfolioPage() {
     )
 
   return (
-    <>
-      <PageShell
-        company={company}
-        title="Portfolio"
-        description="Real D&M manufacturing work — never stock photography presented as our own."
-      >
-        <PortfolioTabs projects={projectsPanel} videos={videosPanel} />
-      </PageShell>
+    <PageShell
+      company={company}
+      title="Portfolio"
+      description="Real D&M manufacturing work — never stock photography presented as our own."
+    >
+      <PortfolioTabs projects={projectsPanel} videos={videosPanel} />
 
-      {featuredVideo && <FeaturedVideo video={featuredVideo} />}
+      <div className="-mx-4 -mb-16 sm:-mx-6 sm:-mb-16 lg:-mx-8 lg:-mb-16">
+        {featuredVideo && <FeaturedVideo video={featuredVideo} />}
 
-      <section className="bg-brand-panel py-16 text-white md:py-20">
-        <div className="mx-auto flex max-w-4xl flex-col items-center gap-5 px-4 text-center sm:px-6 lg:px-8">
-          <h2 className="text-3xl font-bold tracking-tight sm:text-4xl">
-            Let&apos;s Bring Your Designs to Life
-          </h2>
-          <p className="max-w-lg text-white/65">
-            From corporate uniforms and safety wear to custom garment branding and fabric
-            printing, D&amp;M Garments delivers tailored solutions for businesses and
-            institutions.
-          </p>
-          <div className="mt-2 flex flex-wrap justify-center gap-4">
-            <Link
-              href="/order"
-              className="inline-flex items-center gap-1.5 rounded-full bg-brand-cta px-6 py-3.5 text-sm font-semibold text-white shadow-lg shadow-black/20 transition-opacity hover:opacity-90"
-            >
-              Request a Quote <ArrowRight className="size-4" />
-            </Link>
-            <Link
-              href="/portfolio"
-              className="inline-flex items-center gap-1.5 rounded-full border border-white/25 bg-white/5 px-6 py-3.5 text-sm font-semibold text-white transition-colors hover:bg-white/10"
-            >
-              Explore Our Portfolio
-            </Link>
+        <section className="bg-brand-panel py-16 text-white md:py-20">
+          <div className="mx-auto flex max-w-4xl flex-col items-center gap-5 px-4 text-center sm:px-6 lg:px-8">
+            <h2 className="text-3xl font-bold tracking-tight sm:text-4xl">
+              Let&apos;s Bring Your Designs to Life
+            </h2>
+            <p className="max-w-lg text-white/65">
+              From corporate uniforms and safety wear to custom garment branding and fabric
+              printing, D&amp;M Garments delivers tailored solutions for businesses and
+              institutions.
+            </p>
+            <div className="mt-2 flex flex-wrap justify-center gap-4">
+              <Link
+                href="/order"
+                className="inline-flex items-center gap-1.5 rounded-full bg-brand-cta px-6 py-3.5 text-sm font-semibold text-white shadow-lg shadow-black/20 transition-opacity hover:opacity-90"
+              >
+                Request a Quote <ArrowRight className="size-4" />
+              </Link>
+              <Link
+                href="/portfolio"
+                className="inline-flex items-center gap-1.5 rounded-full border border-white/25 bg-white/5 px-6 py-3.5 text-sm font-semibold text-white transition-colors hover:bg-white/10"
+              >
+                Explore Our Portfolio
+              </Link>
+            </div>
           </div>
-        </div>
-      </section>
-    </>
+        </section>
+      </div>
+    </PageShell>
   )
 }

@@ -49,7 +49,7 @@ export function FeaturedVideo({ video }: { video: PortfolioVideo }) {
             >
               <Image
                 src={video.thumbnail_url}
-                alt={video.title}
+                alt=""
                 fill
                 sizes="400px"
                 className="object-cover transition-transform duration-500 group-hover:scale-105"
