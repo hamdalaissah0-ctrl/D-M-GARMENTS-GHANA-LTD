@@ -7,7 +7,7 @@ import { PortfolioTabs } from "@/components/marketing/portfolio-tabs"
 import { SectionEyebrow } from "@/components/marketing/section-eyebrow"
 import { VideoGallery } from "@/components/marketing/video-gallery"
 import { FeaturedVideo } from "@/components/marketing/featured-video"
-import { Card, CardContent } from "@/components/ui/card"
+import { PortfolioGrid, type PortfolioProjectWithImage } from "@/components/marketing/portfolio-grid"
 import { getCompanyProfile, getPublishedVideos, getFeaturedVideo } from "@/lib/supabase/queries"
 import { createClient } from "@/lib/supabase/server"
 
@@ -18,38 +18,28 @@ export const metadata: Metadata = {
 
 export default async function PortfolioPage() {
   const supabase = await createClient()
-  const [company, { data: projects }, videos, featuredVideo] = await Promise.all([
+  const [company, { data: projects }, { data: images }, videos, featuredVideo] = await Promise.all([
     getCompanyProfile(),
     supabase.from("portfolio_projects").select("*").eq("status", "published").order("sort_order", { ascending: true }),
+    supabase.from("portfolio_images").select("*"),
     getPublishedVideos(),
     getFeaturedVideo(),
   ])
 
+  const imageByProject = new Map((images ?? []).map((img) => [img.portfolio_project_id, img.storage_path]))
+  const projectsWithImages: PortfolioProjectWithImage[] = (projects ?? []).map((p) => ({
+    ...p,
+    image_url: imageByProject.get(p.id) ?? null,
+  }))
+
   const projectsPanel =
-    !projects || projects.length === 0 ? (
+    projectsWithImages.length === 0 ? (
       <ContentRequired
         title="No portfolio projects published yet"
         description="Completed production work will appear here once supplied by D&M."
       />
     ) : (
-      <div className="grid gap-6 sm:grid-cols-2 lg:grid-cols-3">
-        {projects.map((project) => (
-          <Card key={project.id}>
-            <CardContent className="p-5">
-              <p className="font-medium text-foreground">{project.title}</p>
-              <p className="mt-1 text-sm text-muted-foreground">
-                {project.industry ?? "Content required"}
-                {project.year ? ` · ${project.year}` : ""}
-              </p>
-              {project.description && (
-                <p className="mt-2 text-sm text-muted-foreground line-clamp-3">
-                  {project.description}
-                </p>
-              )}
-            </CardContent>
-          </Card>
-        ))}
-      </div>
+      <PortfolioGrid projects={projectsWithImages} />
     )
 
   const videosPanel =
@@ -79,7 +69,7 @@ export default async function PortfolioPage() {
     <PageShell
       company={company}
       title="Portfolio"
-      description="Real D&M manufacturing work — never stock photography presented as our own."
+      description="Explore D&M's range of workwear, hospitality and corporate garment solutions."
     >
       <PortfolioTabs projects={projectsPanel} videos={videosPanel} />
 
