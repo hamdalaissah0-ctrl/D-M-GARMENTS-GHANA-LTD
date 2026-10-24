@@ -202,7 +202,7 @@ password_requirements = ""
 
 [auth.rate_limit]
 # Number of emails that can be sent per hour. Requires auth.email.smtp to be enabled.
-email_sent = 2
+email_sent = 30
 # Number of SMS messages that can be sent per hour. Requires auth.sms to be enabled.
 sms_sent = 30
 # Number of anonymous sign-ins that can be made per hour per IP address. Requires enable_anonymous_sign_ins = true.
@@ -240,19 +240,34 @@ otp_length = 8
 otp_expiry = 3600
 
 # Use a production-ready SMTP server
-# [auth.email.smtp]
-# enabled = true
-# host = "smtp.sendgrid.net"
-# port = 587
-# user = "apikey"
-# pass = "env(SENDGRID_API_KEY)"
-# admin_email = "admin@email.com"
-# sender_name = "Admin"
+# Supabase's built-in shared email service is aggressively rate-limited
+# (a few emails/hour, non-configurable) and explicitly not meant for
+# production — this caused real password-reset emails to go undelivered.
+# Resend's free tier (3,000/month) replaces it. onboarding@resend.dev is
+# Resend's shared sender, usable without verifying a custom domain.
+[auth.email.smtp]
+enabled = true
+host = "smtp.resend.com"
+port = 465
+user = "resend"
+pass = "env(SUPABASE_AUTH_SMTP_PASS)"
+admin_email = "onboarding@resend.dev"
+sender_name = "D&M Garments Ghana Limited"
 
 # Uncomment to customize email template
 # [auth.email.template.invite]
 # subject = "You have been invited"
 # content_path = "./supabase/templates/invite.html"
+
+# Custom recovery template: links to our own /auth/confirm page instead of
+# Supabase's default /auth/v1/verify endpoint. The default link gets
+# auto-"clicked" (consumed) by Gmail/Outlook link-scanners before the real
+# user ever opens it, burning the single-use token — causing "invalid or
+# expired link" even on a fresh email. Our /auth/confirm page only verifies
+# the token on an explicit button click, which scanners don't perform.
+[auth.email.template.recovery]
+subject = "Reset your password"
+content_path = "./supabase/templates/recovery.html"
 
 # Uncomment to customize notification email template
 # [auth.email.notification.password_changed]
